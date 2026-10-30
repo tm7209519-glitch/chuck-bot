@@ -11,8 +11,7 @@
 //   7. On real quit, tears down the service it started (never the user's own
 //      Docker/Ollama).
 
-const { app, BrowserWindow, Tray, Menu, nativeImage, shell, dialog } =
-  require("electron")
+const { app, BrowserWindow, Tray, Menu, nativeImage, shell, dialog } = require("electron")
 const { spawn } = require("node:child_process")
 const path = require("node:path")
 const fs = require("node:fs")
@@ -45,8 +44,7 @@ function appRoot() {
 
 function nodeBin() {
   // Prefer a bundled Node runtime (resources/node), fall back to system node.
-  const bundled =
-    process.platform === "win32" ? "node.exe" : "node"
+  const bundled = process.platform === "win32" ? "node.exe" : "node"
   const bundledPath = path.join(process.resourcesPath, "node", bundled)
   if (fs.existsSync(bundledPath)) return bundledPath
   return process.platform === "win32" ? "node.exe" : "node"
@@ -244,8 +242,7 @@ app.whenReady().then(async () => {
       type: "warning",
       title: "Chuck Bot",
       message: "本地服务启动超时",
-      detail:
-        "Chuck Bot 服务未能及时就绪。请检查日志，或确认 6796 端口未被占用。",
+      detail: "Chuck Bot 服务未能及时就绪。请检查日志，或确认 6796 端口未被占用。",
     })
     return
   }

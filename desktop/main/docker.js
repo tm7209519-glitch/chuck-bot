@@ -37,10 +37,7 @@ function desktopAppPath() {
 function dockerBinaries() {
   if (process.platform === "win32") {
     const pf = process.env.ProgramFiles || "C:\\Program Files"
-    return [
-      "docker",
-      path.join(pf, "Docker", "Docker", "resources", "bin", "docker.exe"),
-    ]
+    return ["docker", path.join(pf, "Docker", "Docker", "resources", "bin", "docker.exe")]
   }
   if (process.platform === "darwin") {
     return [

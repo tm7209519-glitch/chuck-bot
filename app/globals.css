@@ -8,11 +8,13 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ───────────────────────────────────────────────────────────────────
- * Xiryn design tokens
+ * Chuck Bot design tokens
  *
- * Two accents, named after Orion: Rigel (cool, the brand and focus color)
- * and Betelgeuse (warm, for hand-offs and attention). Everything else is
- * a near-neutral ramp with a faint blue cast, separated by hairlines.
+ * Grok/xAI-inspired: a near-black canvas with a single warm-orange accent
+ * (the "rigel" token keeps its name for source compatibility but now carries
+ * the brand orange). Neutral surfaces separate by faint hairlines rather
+ * than shadows. Everything else is a near-neutral ramp with a faint blue
+ * cast.
  * ─────────────────────────────────────────────────────────────────── */
 
 :root {
@@ -27,8 +29,8 @@
   --popover: oklch(1 0 0);
   --popover-foreground: var(--foreground);
 
-  --primary: oklch(0.22 0.012 260);
-  --primary-foreground: oklch(0.98 0 0);
+  --primary: oklch(0.6 0.19 40);
+  --primary-foreground: oklch(0.99 0 0);
   --secondary: oklch(0.955 0.004 250);
   --secondary-foreground: var(--foreground);
   --muted: oklch(0.955 0.004 250);
@@ -40,12 +42,14 @@
   --border: oklch(0.2 0.02 260 / 10%);
   --hairline: oklch(0.2 0.02 260 / 7%);
   --input: oklch(0.2 0.02 260 / 14%);
-  --ring: oklch(0.6 0.15 240);
+  --ring: oklch(0.65 0.19 40);
 
-  --rigel: oklch(0.56 0.16 242);
-  --rigel-soft: oklch(0.56 0.16 242 / 12%);
-  --betelgeuse: oklch(0.62 0.17 48);
-  --betelgeuse-soft: oklch(0.62 0.17 48 / 12%);
+  /* Grok-style warm orange as the single brand accent. Rigel keeps its name
+     for source compatibility but now carries the warm accent. */
+  --rigel: oklch(0.62 0.19 40);
+  --rigel-soft: oklch(0.62 0.19 40 / 12%);
+  --betelgeuse: oklch(0.6 0.18 45);
+  --betelgeuse-soft: oklch(0.6 0.18 45 / 12%);
   --ok: oklch(0.6 0.15 155);
   --warn: oklch(0.7 0.15 75);
   --destructive: oklch(0.58 0.21 25);
@@ -63,8 +67,8 @@
   --popover: oklch(0.2 0.008 265);
   --popover-foreground: var(--foreground);
 
-  --primary: oklch(0.95 0.005 250);
-  --primary-foreground: oklch(0.17 0.008 265);
+  --primary: oklch(0.75 0.18 45);
+  --primary-foreground: oklch(0.15 0.02 40);
   --secondary: oklch(0.23 0.008 265);
   --secondary-foreground: var(--foreground);
   --muted: oklch(0.225 0.008 265);
@@ -76,12 +80,12 @@
   --border: oklch(1 0 0 / 8%);
   --hairline: oklch(1 0 0 / 5.5%);
   --input: oklch(1 0 0 / 11%);
-  --ring: oklch(0.75 0.13 235);
+  --ring: oklch(0.78 0.17 45);
 
-  --rigel: oklch(0.79 0.12 232);
-  --rigel-soft: oklch(0.79 0.12 232 / 13%);
-  --betelgeuse: oklch(0.79 0.14 58);
-  --betelgeuse-soft: oklch(0.79 0.14 58 / 13%);
+  --rigel: oklch(0.75 0.17 48);
+  --rigel-soft: oklch(0.75 0.17 48 / 13%);
+  --betelgeuse: oklch(0.73 0.17 55);
+  --betelgeuse-soft: oklch(0.73 0.17 55 / 13%);
   --ok: oklch(0.78 0.15 155);
   --warn: oklch(0.82 0.14 80);
   --destructive: oklch(0.68 0.19 24);
