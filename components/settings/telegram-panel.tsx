@@ -152,9 +152,9 @@ export function TelegramPanelView({ initial }: { initial: TelegramPanel }) {
             </p>
             <p>
               Send <Code>/newbot</Code>. Give it a display name (e.g.{" "}
-              <Code>My Xiryn</Code>
+              <Code>My Chuck Bot</Code>
               ), then a username that ends in <Code>bot</Code> (e.g.{" "}
-              <Code>my_xiryn_bot</Code>).
+              <Code>my_chuck_bot</Code>).
             </p>
             <p>
               BotFather replies with a token like <Code>123456789:AAH…</Code>. That&apos;s

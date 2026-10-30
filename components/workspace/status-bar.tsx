@@ -5,6 +5,7 @@ import { BellIcon, BellOffIcon } from "lucide-react"
 
 import { useWorkspace } from "@/components/workspace/context"
 import { useNotifications } from "@/components/workspace/notifier"
+import { PRODUCT_SLUG } from "@/lib/project"
 import { cn } from "@/lib/utils"
 
 function Dot({ on, warn }: { on: boolean; warn?: boolean }) {
@@ -121,7 +122,9 @@ export function StatusBar() {
         sqlite
       </Cell>
       <Cell className="max-md:hidden">node {status.node.replace(/^v/, "")}</Cell>
-      <Cell>xiryn {status.version}</Cell>
+      <Cell>
+        {PRODUCT_SLUG} {status.version}
+      </Cell>
     </footer>
   )
 }

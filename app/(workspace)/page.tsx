@@ -10,6 +10,7 @@ import {
   TemplateGrid,
 } from "@/components/home/actions"
 import { agentTemplates } from "@/lib/templates"
+import { PRODUCT_SLUG } from "@/lib/project"
 import { getNavigation, getSystemStatus } from "@/queries/workspace"
 import { cn } from "@/lib/utils"
 
@@ -103,7 +104,7 @@ export default function Home() {
               <span className="size-2.5 rounded-full bg-foreground/10" />
             </span>
             <span className="ml-2 font-mono text-[11px] text-muted-foreground">
-              xiryn — system check
+              {PRODUCT_SLUG} — system check
             </span>
             <span
               className={cn(

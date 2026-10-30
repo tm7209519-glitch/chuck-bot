@@ -16,7 +16,7 @@ const KEY = "xiryn.feedback"
 const FIRST_ASK = 3
 const ASK_AGAIN_AFTER = 25
 const ASK_AGAIN_DAYS = 21
-const REPO = "https://github.com/SouravBeraAkaSpeed/xiryn"
+const REPO = "https://github.com/tm7209519-glitch/chuck-bot"
 
 type Memory = {
   done: number

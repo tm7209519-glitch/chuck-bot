@@ -7,6 +7,7 @@ import { ArrowRightIcon, HandIcon, SendIcon, XIcon } from "lucide-react"
 
 import { Glyph } from "@/components/glyph"
 import { Button } from "@/components/ui/button"
+import { PRODUCT_SLUG } from "@/lib/project"
 import {
   createToastManager,
   Toast,
@@ -199,7 +200,7 @@ function Cards({ onOpen }: { onOpen: (href: string) => void }) {
           <ToastPrimitive.Description className="line-clamp-3 text-[12.5px] leading-relaxed text-foreground/80" />
           <div className="flex items-center justify-between gap-2 border-t border-dashed pt-2.5">
             <span className="font-mono text-[10px] text-faint">
-              {data.kind === "attention" ? "// waiting for you" : "// xiryn"}
+              {data.kind === "attention" ? "// waiting for you" : `// ${PRODUCT_SLUG}`}
             </span>
             <div className="flex items-center gap-1.5">
               {data.takeoverHref && (
