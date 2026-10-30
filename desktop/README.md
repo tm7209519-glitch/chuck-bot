@@ -45,8 +45,15 @@ node desktop/scripts/bundle-app.mjs
 # 3. 安装 Electron 并运行
 cd desktop
 npm install
-npm start
+npm run dev    # ← 用 dev 而不是 start，见下面的坑
 ```
+
+> **关键坑：`ELECTRON_RUN_AS_NODE`**。WorkBuddy / VSCode 等 Electron 宿主会把
+> `ELECTRON_RUN_AS_NODE=1` 传给子进程，导致 `electron .` 以纯 Node 模式运行，
+> `require("electron")` 返回 electron.exe 的**路径字符串**而不是 API 对象
+> （`app`/`BrowserWindow` 全是 undefined）。`npm run dev` 走的
+> `scripts/dev.cmd` 会先清除该变量。直接命令行启动时用：
+> `env -u ELECTRON_RUN_AS_NODE ./node_modules/electron/dist/electron.exe .`
 
 ### 打包安装包
 
@@ -54,6 +61,16 @@ npm start
 cd desktop
 npm run dist   # 生成 Windows NSIS 安装包（dist/ 目录）
 ```
+
+### 真机验证记录（2026-10-30）
+
+- Electron 33.4.11 二进制已下载（`desktop/node_modules/electron/dist/electron.exe`，188MB）。
+- 源码模式 `npm run dev` 已验证：窗口打开 + 4 个 electron 进程 + 拉起 `next start`
+  + 首页 `http://127.0.0.1:6796` 返回 200。
+- `bundle-app.mjs` 已成功组装 `desktop/resources/app-root`（.next + node_modules +
+  workstation/db/public/messages/lib，含 better-sqlite3 原生模块）。
+- **尚未验证**：`electron-builder` 真正出安装包（需跑 `npm run dist`），以及打包后
+  的 `app.isPackaged` 分支（内置 Node 路径、userData 数据目录、auto-updater）。
 
 ## 当前状态
 
