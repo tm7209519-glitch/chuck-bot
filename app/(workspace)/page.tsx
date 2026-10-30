@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { formatDistanceToNowStrict } from "date-fns"
 import { ArrowRightIcon } from "lucide-react"
+import { getTranslations } from "next-intl/server"
 
 import { Glyph, SquadGlyph } from "@/components/glyph"
 import {
@@ -20,12 +21,14 @@ function Check({
   detail,
   href,
   optional,
+  configure,
 }: {
   ok: boolean
   name: string
   detail: string
   href?: string
   optional?: boolean
+  configure?: string
 }) {
   return (
     <div className="flex items-baseline gap-3 py-0.5">
@@ -41,7 +44,7 @@ function Check({
       <span className="min-w-0 truncate text-muted-foreground">{detail}</span>
       {!ok && href && (
         <Link href={href} className="ml-auto shrink-0 text-rigel hover:underline">
-          configure →
+          {configure}
         </Link>
       )}
     </div>
@@ -64,35 +67,32 @@ function SectionTitle({
   )
 }
 
-export default function Home() {
+export default async function Home() {
+  const t = await getTranslations("home")
   const status = getSystemStatus()
   const nav = getNavigation()
   const hasAgents = nav.agents.length > 0
   const hour = new Date().getHours()
   const greeting =
     hour < 5
-      ? "Working late"
+      ? t("greetingLate")
       : hour < 12
-        ? "Good morning"
+        ? t("greetingMorning")
         : hour < 18
-          ? "Good afternoon"
-          : "Good evening"
+          ? t("greetingAfternoon")
+          : t("greetingEvening")
 
   return (
     <div className="relative min-h-0 flex-1 overflow-y-auto">
       <div className="bg-grid bg-grid-fade pointer-events-none absolute inset-x-0 top-0 h-[460px]" />
       <div className="relative mx-auto flex max-w-5xl flex-col gap-10 px-6 py-12 sm:py-16">
         <header className="flex flex-col gap-3">
-          <span className="label-mono">{"// overview"}</span>
+          <span className="label-mono">{t("overviewLabel")}</span>
           <h1 className="max-w-2xl text-3xl font-semibold tracking-[-0.025em] text-balance sm:text-4xl">
-            {hasAgents
-              ? `${greeting}. Your agents are standing by.`
-              : "Your machine. Your keys. Your agents."}
+            {hasAgents ? t("agentsStandingBy", { greeting }) : t("noAgentsTitle")}
           </h1>
           <p className="max-w-2xl text-[15px] leading-relaxed text-muted-foreground">
-            Your agents work on their own sandboxed Linux desktops — never on your screen
-            — while you keep using this computer. Their machines, conversations, memory
-            and keys all stay here; nothing leaves except the calls you configure.
+            {t("noAgentsSubtitle")}
           </p>
         </header>
 
@@ -104,7 +104,7 @@ export default function Home() {
               <span className="size-2.5 rounded-full bg-foreground/10" />
             </span>
             <span className="ml-2 font-mono text-[11px] text-muted-foreground">
-              {PRODUCT_SLUG} — system check
+              {PRODUCT_SLUG} — {t("systemCheck")}
             </span>
             <span
               className={cn(
@@ -112,50 +112,52 @@ export default function Home() {
                 status.ready ? "text-ok" : "text-betelgeuse"
               )}
             >
-              {status.ready ? "● ready" : "● setup needed"}
+              {status.ready ? t("ready") : t("setupNeeded")}
             </span>
           </div>
           <div className="flex flex-col px-4 py-3 font-mono text-[12px]">
-            <Check ok name="database" detail={`sqlite · ${status.dbPath}`} />
+            <Check
+              ok
+              name={t("database")}
+              detail={t("sqliteDetail", { path: status.dbPath })}
+            />
             <Check
               ok={!!status.defaultModel}
-              name="model"
+              name={t("model")}
               detail={
                 status.defaultModel
-                  ? `${status.defaultModel} · ${status.providers.length} provider${status.providers.length === 1 ? "" : "s"} configured`
-                  : "no provider key found — add one to .env or Settings"
+                  ? t("modelDetail", {
+                      model: status.defaultModel,
+                      count: status.providers.length,
+                    })
+                  : t("noProvider")
               }
               href="/settings#providers"
+              configure={t("configure")}
             />
             <Check
               ok={status.workstation}
               optional
-              name="workstation"
+              name={t("workstation")}
               detail={
                 status.docker === "ready"
-                  ? "docker · one container per agent, on this computer"
+                  ? t("dockerReady")
                   : status.workstation
-                    ? "docker stopped · starts when an agent needs it"
-                    : "docker not found — agents can't run code or use a desktop"
+                    ? t("dockerStopped")
+                    : t("dockerNotFound")
               }
               href="/settings#integrations"
+              configure={t("configure")}
             />
             <Check
               ok={status.web}
               optional
-              name="web"
-              detail={
-                status.web
-                  ? "firecrawl · search and page fetch"
-                  : "firecrawl not configured — agents can't browse the web"
-              }
+              name={t("web")}
+              detail={status.web ? t("webReady") : t("webNotConfigured")}
               href="/settings#integrations"
+              configure={t("configure")}
             />
-            <Check
-              ok
-              name="network"
-              detail="bound to loopback · no accounts, no telemetry"
-            />
+            <Check ok name={t("network")} detail={t("loopback")} />
           </div>
         </section>
 
@@ -163,14 +165,14 @@ export default function Home() {
           <SectionTitle
             aside={
               <span className="flex items-center gap-3 font-mono text-[10.5px] text-faint">
-                {hasAgents && `${nav.agents.length} total`}
+                {hasAgents && t("total", { count: nav.agents.length })}
                 <Link href="/templates" className="text-rigel hover:underline">
-                  {agentTemplates.length} templates →
+                  {agentTemplates.length} {t("templates")} →
                 </Link>
               </span>
             }
           >
-            Agents
+            {t("agents")}
           </SectionTitle>
           {hasAgents ? (
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -197,13 +199,13 @@ export default function Home() {
                     {agent.busy && (
                       <span className="ml-auto flex items-center gap-1.5 font-mono text-[10.5px] text-rigel">
                         <span className="size-1.5 animate-pulse-dot rounded-full bg-rigel text-rigel" />
-                        working
+                        {t("working")}
                       </span>
                     )}
                   </div>
                   <div className="mt-auto flex items-center gap-2 font-mono text-[10.5px] text-faint">
                     <span className="truncate">
-                      {agent.model ?? status.defaultModel ?? "no model"}
+                      {agent.model ?? status.defaultModel ?? t("noModel")}
                     </span>
                     <ArrowRightIcon className="ml-auto size-3.5 -translate-x-1 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100" />
                   </div>
@@ -215,11 +217,9 @@ export default function Home() {
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-3 rounded-xl border border-rigel/25 bg-rigel/5 p-5 sm:flex-row sm:items-center">
                 <div className="flex min-w-0 flex-1 flex-col gap-1">
-                  <span className="text-[14px] font-semibold">Start with a team</span>
+                  <span className="text-[14px] font-semibold">{t("startWithTeam")}</span>
                   <span className="text-[12.5px] leading-relaxed text-muted-foreground">
-                    Atlas (browser and desktop), Vega (research), Rigel (code) and Lyra
-                    (data), together in one squad. Ask the squad anything and they hand it
-                    to whoever fits.
+                    {t("startWithTeamDesc")}
                   </span>
                 </div>
                 <StarterTeamButton className="shrink-0" />
@@ -229,7 +229,7 @@ export default function Home() {
                 href="/templates"
                 className="self-start font-mono text-[11.5px] text-rigel hover:underline"
               >
-                Browse all {agentTemplates.length} templates →
+                {t("browseTemplates", { count: agentTemplates.length })}
               </Link>
             </div>
           )}
@@ -238,13 +238,10 @@ export default function Home() {
         {hasAgents && (
           <section className="flex flex-col gap-4">
             <SectionTitle aside={<NewSquadButton disabled={nav.agents.length < 2} />}>
-              Squads
+              {t("squads")}
             </SectionTitle>
             {nav.squads.length === 0 ? (
-              <p className="text-[13px] text-muted-foreground">
-                A squad puts several agents in one thread. Address any of them, and they
-                delegate to whoever fits the job.
-              </p>
+              <p className="text-[13px] text-muted-foreground">{t("squadEmpty")}</p>
             ) : (
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {nav.squads.map((squad) => (
@@ -263,8 +260,7 @@ export default function Home() {
                         {squad.name}
                       </span>
                       <span className="font-mono text-[11px] text-muted-foreground">
-                        {squad.agentIds.length} agent
-                        {squad.agentIds.length === 1 ? "" : "s"}
+                        {t("agentsUnit", { count: squad.agentIds.length })}
                       </span>
                     </div>
                   </Link>
@@ -276,7 +272,7 @@ export default function Home() {
 
         {nav.threads.length > 0 && (
           <section className="flex flex-col gap-3">
-            <SectionTitle>Recent activity</SectionTitle>
+            <SectionTitle>{t("recentActivity")}</SectionTitle>
             <div className="divide-y rounded-xl border bg-surface/40">
               {nav.threads.slice(0, 6).map((thread) => {
                 const agent = nav.agents.find((a) => a.id === thread.agentId)
@@ -297,7 +293,7 @@ export default function Home() {
                     )}
                     <span className="flex min-w-0 flex-1 flex-col leading-tight">
                       <span className="truncate text-[13px] font-medium">
-                        {thread.title ?? "New thread"}
+                        {thread.title ?? t("newThread")}
                       </span>
                       {thread.preview && (
                         <span className="truncate text-[12px] text-muted-foreground">
