@@ -1,0 +1,45 @@
+{
+  "name": "chuck-bot-desktop",
+  "version": "0.1.0",
+  "description": "Chuck Bot desktop shell — a thin Electron client that bundles and manages the local Xiryn (Next.js) service.",
+  "main": "main/index.js",
+  "private": true,
+  "author": "Chuck Bot",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0"
+  },
+  "build": {
+    "appId": "com.chuckbot.desktop",
+    "productName": "Chuck Bot",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main/**/*",
+      "preload/**/*",
+      "resources/**/*",
+      "package.json"
+    ],
+    "asarUnpack": [
+      "**/*.node"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.productivity"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}
