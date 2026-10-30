@@ -9,8 +9,8 @@
 |---|---|
 | 产品名 | **Chuck Bot** |
 | 官方上游 | `SouravBeraAkaSpeed/xiryn`（持续合并来源） |
-| 自有发布仓库 | `Modelra/chuck-bot` |
-| 提交作者 | `Modelra <tm7209519@gmail.com>` |
+| 自有发布仓库 | `tm7209519-glitch/chuck-bot` |
+| 提交作者 | `tm7209519-glitch <tm7209519@gmail.com>` |
 | 协议 | MIT（继承自上游） |
 
 品牌与仓库配置集中在 `lib/project.ts`，禁止在组件里硬编码产品名、图标、更新地址或官网。
@@ -33,7 +33,7 @@ local/zip-baseline         → 最初 ZIP 基线，兜底备份（只读）
 ```
 
 - `origin` 指向官方 `https://github.com/SouravBeraAkaSpeed/xiryn.git`
-- 自有远程指向 fork `https://github.com/Modelra/chuck-bot.git`（阶段 0 待补）
+- 自有远程指向 fork `https://github.com/tm7209519-glitch/chuck-bot.git`
 - 每次官方更新流程：`main` 快进 → 合并到产品分支 → 跑完整回归。
 
 ## 4. 版本规则

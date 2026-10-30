@@ -13,7 +13,7 @@ export const UPSTREAM_REPOSITORY_URL = `https://github.com/${UPSTREAM_REPOSITORY
 
 // The downstream product. This is the fork, its brand and its update channel.
 export const PRODUCT_NAME = "Chuck Bot"
-export const PRODUCT_REPOSITORY = "Modelra/chuck-bot"
+export const PRODUCT_REPOSITORY = "tm7209519-glitch/chuck-bot"
 export const PRODUCT_REPOSITORY_URL = `https://github.com/${PRODUCT_REPOSITORY}`
 
 // Where the shipped app asks GitHub for updates and star counts.
