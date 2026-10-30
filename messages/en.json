@@ -71,5 +71,43 @@
     "sendFeedback": "Send feedback",
     "toggleTheme": "Toggle theme",
     "working": "Working"
+  },
+  "settings": {
+    "kicker": "// settings",
+    "model": {
+      "kicker": "01 · model",
+      "title": "Default model",
+      "description": "Agents think with this model unless they're configured with their own. Any provider/model pair works, including local models."
+    },
+    "localModels": {
+      "kicker": "02 · local models",
+      "title": "Local models",
+      "description": "Run agents for free on this computer. Download a model with one click and make it the default."
+    },
+    "providers": {
+      "kicker": "03 · providers",
+      "title": "Model providers",
+      "description": "Bring your own keys. Configure as many providers as you like and mix them across agents. Local runtimes (Ollama, LM Studio) need only an endpoint."
+    },
+    "integrations": {
+      "kicker": "04 · integrations",
+      "title": "Workstations & web",
+      "description": "Agents' machines run in Docker on this computer. Firecrawl is optional: without it agents search and read the web only by browsing."
+    },
+    "vault": {
+      "kicker": "05 · vault",
+      "title": "Vault",
+      "description": "What agents may use on your behalf — encrypted here, never shown to them."
+    },
+    "remoteAccess": {
+      "kicker": "06 · remote access",
+      "title": "Telegram",
+      "description": "Talk to your agents from anywhere. Chuck Bot polls Telegram from this machine — no public URL, no port forwarding, no tunnel."
+    },
+    "system": {
+      "kicker": "07 · system",
+      "title": "System",
+      "description": "Where your data lives and what Chuck Bot is running on."
+    }
   }
 }

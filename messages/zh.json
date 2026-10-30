@@ -71,5 +71,43 @@
     "sendFeedback": "发送反馈",
     "toggleTheme": "切换主题",
     "working": "工作中"
+  },
+  "settings": {
+    "kicker": "// 设置",
+    "model": {
+      "kicker": "01 · 模型",
+      "title": "默认模型",
+      "description": "Agent 用这个模型思考，除非它们单独配置了自己的。任何 provider/模型组合都可以，包括本地模型。"
+    },
+    "localModels": {
+      "kicker": "02 · 本地模型",
+      "title": "本地模型",
+      "description": "在这台电脑上免费运行 Agent。一键下载模型并设为默认。"
+    },
+    "providers": {
+      "kicker": "03 · 提供商",
+      "title": "模型提供商",
+      "description": "带上你自己的密钥。配置任意多个提供商，并在不同 Agent 间混用。本地运行时（Ollama、LM Studio）只需一个端点。"
+    },
+    "integrations": {
+      "kicker": "04 · 集成",
+      "title": "工作站与网络",
+      "description": "Agent 的机器在这台电脑的 Docker 里运行。Firecrawl 可选：没有它，Agent 只能通过浏览来搜索和读取网页。"
+    },
+    "vault": {
+      "kicker": "05 · 保险库",
+      "title": "保险库",
+      "description": "Agent 可代表你使用的东西——在这里加密，从不展示给它们。"
+    },
+    "remoteAccess": {
+      "kicker": "06 · 远程访问",
+      "title": "Telegram",
+      "description": "从任何地方和你的 Agent 对话。Chuck Bot 从这台机器轮询 Telegram——无需公网 URL、无需端口转发、无需隧道。"
+    },
+    "system": {
+      "kicker": "07 · 系统",
+      "title": "系统",
+      "description": "你的数据存在哪里、Chuck Bot 运行在什么环境。"
+    }
   }
 }

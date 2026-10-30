@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import {
   CheckIcon,
   ChevronRightIcon,
@@ -935,20 +936,21 @@ export function SettingsForm({
   data: SettingsData
   telegram: React.ReactNode
 }) {
+  const t = useTranslations("settings")
   const nav = [
-    ["model", "Model"],
-    ["local", "Local models"],
-    ["providers", "Providers"],
-    ["integrations", "Integrations"],
-    ["vault", "Vault"],
-    ["remote", "Remote access"],
-    ["system", "System"],
+    ["model", t("model.title")],
+    ["local", t("localModels.title")],
+    ["providers", t("providers.title")],
+    ["integrations", t("integrations.title")],
+    ["vault", t("vault.title")],
+    ["remote", t("remoteAccess.title")],
+    ["system", t("system.title")],
   ]
 
   return (
     <div className="mx-auto grid w-full max-w-5xl gap-10 px-6 py-12 lg:grid-cols-[180px_1fr]">
       <nav className="hidden flex-col gap-0.5 lg:sticky lg:top-12 lg:flex lg:self-start">
-        <span className="label-mono mb-2 px-2">{"// settings"}</span>
+        <span className="label-mono mb-2 px-2">{t("kicker")}</span>
         {nav.map(([id, label]) => (
           <a
             key={id}
@@ -973,27 +975,27 @@ export function SettingsForm({
 
         <Section
           id="model"
-          kicker="01 · model"
-          title="Default model"
-          description="Agents think with this model unless they're configured with their own. Any provider/model pair works, including local models."
+          kicker={t("model.kicker")}
+          title={t("model.title")}
+          description={t("model.description")}
         >
           <ModelSection data={data} />
         </Section>
 
         <Section
           id="local"
-          kicker="02 · local models"
-          title="Local models"
-          description="Run agents for free on this computer. Download a model with one click and make it the default."
+          kicker={t("localModels.kicker")}
+          title={t("localModels.title")}
+          description={t("localModels.description")}
         >
           <LocalModelsCard />
         </Section>
 
         <Section
           id="providers"
-          kicker="03 · providers"
-          title="Model providers"
-          description="Bring your own keys. Configure as many providers as you like and mix them across agents. Local runtimes (Ollama, LM Studio) need only an endpoint."
+          kicker={t("providers.kicker")}
+          title={t("providers.title")}
+          description={t("providers.description")}
         >
           <div className="divide-y overflow-hidden rounded-xl border bg-surface/50">
             {data.providers.map((provider) => (
@@ -1004,9 +1006,9 @@ export function SettingsForm({
 
         <Section
           id="integrations"
-          kicker="04 · integrations"
-          title="Workstations & web"
-          description="Agents' machines run in Docker on this computer. Firecrawl is optional: without it agents search and read the web only by browsing."
+          kicker={t("integrations.kicker")}
+          title={t("integrations.title")}
+          description={t("integrations.description")}
         >
           <WorkstationCard data={data} />
           <IntegrationCard
@@ -1032,27 +1034,27 @@ export function SettingsForm({
 
         <Section
           id="vault"
-          kicker="05 · vault"
-          title="Vault"
-          description="What agents may use on your behalf — encrypted here, never shown to them."
+          kicker={t("vault.kicker")}
+          title={t("vault.title")}
+          description={t("vault.description")}
         >
           <VaultPanel />
         </Section>
 
         <Section
           id="remote"
-          kicker="06 · remote access"
-          title="Telegram"
-          description="Talk to your agents from anywhere. Xiryn polls Telegram from this machine — no public URL, no port forwarding, no tunnel."
+          kicker={t("remoteAccess.kicker")}
+          title={t("remoteAccess.title")}
+          description={t("remoteAccess.description")}
         >
           {telegram}
         </Section>
 
         <Section
           id="system"
-          kicker="07 · system"
-          title="System"
-          description="Where your data lives and what Xiryn is running on."
+          kicker={t("system.kicker")}
+          title={t("system.title")}
+          description={t("system.description")}
         >
           <div className="divide-y rounded-xl border bg-surface/50 font-mono text-[12px]">
             {[
