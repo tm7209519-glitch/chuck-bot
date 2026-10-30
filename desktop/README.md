@@ -21,8 +21,10 @@ Electron 主进程 (desktop/main/index.js)
 
 ```
 desktop/
-├── main/index.js           # 主进程：窗口、托盘、服务生命周期
-├── preload/index.js        # 最小安全 IPC 桥
+├── main/index.js           # 主进程：窗口、托盘、服务生命周期、首次运行引导
+├── main/docker.js          # Docker 检测（missing/stopped/ready + 非默认安装路径）
+├── main/ipc.js             # 环境诊断 IPC（env:docker / env:start-docker / env:open-external）
+├── preload/index.js        # 最小安全 IPC 桥（chuckBot.env）
 ├── resources/app-root/     # 打包后的 Xiryn 应用（构建时生成）
 ├── resources/node/         # 内置 Node 运行时（构建时生成，可选）
 ├── scripts/bundle-app.mjs  # 组装 app-root + node 的脚本
@@ -61,8 +63,10 @@ npm run dist   # 生成 Windows NSIS 安装包（dist/ 目录）
 - [x] 健康检查（轮询 127.0.0.1:6796）
 - [x] 退出时清理自启的服务
 - [x] 外部链接走系统浏览器
-- [ ] 首次运行环境检测（Docker 检测/引导）—— 阶段 3
-- [ ] 镜像自动拉取进度 —— 阶段 3
+- [x] 首次运行 Docker 检测 + 缺失引导（阶段 3）
+- [x] 环境诊断 IPC（Docker 状态查询 / 启动 / 外链）
+- [ ] 首次运行「欢迎向导」内嵌页面（当前是弹窗，可升级为引导页）
+- [ ] 镜像自动拉取进度展示（复用 Xiryn 的 buildImage，客户端仅呈现状态）
 - [ ] 真实品牌图标（当前是占位图标）
 - [ ] 代码签名 + 自动更新 —— 阶段 5
 
