@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils"
+import { PRODUCT_SLUG } from "@/lib/project"
 
-// The Xiryn mark: an open orbit with Orion's belt rising through the gap
+// The Chuck Bot mark: an open orbit with Orion's belt rising through the gap
 export function LogoMark({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 64 64" aria-hidden className={cn("size-6 shrink-0", className)}>
@@ -38,7 +39,7 @@ export function Wordmark({ className }: { className?: string }) {
         className
       )}
     >
-      xiryn
+      {PRODUCT_SLUG}
     </span>
   )
 }

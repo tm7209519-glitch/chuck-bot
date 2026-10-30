@@ -1,10 +1,13 @@
 import type { Metadata, Viewport } from "next"
 import localFont from "next/font/local"
+import { NextIntlClientProvider } from "next-intl"
+import { getLocale, getMessages, getTranslations } from "next-intl/server"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toast"
 import { TooltipProvider } from "@/components/ui/tooltip"
+import { isLocale } from "@/lib/i18n/routing"
 import { cn } from "@/lib/utils"
 
 // Fonts ship with the app (npm, SIL OFL); nothing is fetched from a font CDN
@@ -29,11 +32,15 @@ const mono = localFont({
   display: "swap",
 })
 
-export const metadata: Metadata = {
-  title: { default: "Xiryn", template: "%s · Xiryn" },
-  description:
-    "Self-hosted AI agents on your own keys: a sandboxed Linux workstation, long-term memory and any model per agent, reachable from Telegram.",
-  applicationName: "Xiryn",
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("brand")
+  const name = t("name")
+  return {
+    title: { default: name, template: `%s · ${name}` },
+    description:
+      "Self-hosted AI agents on your own keys: a sandboxed Linux workstation, long-term memory and any model per agent, reachable from Telegram.",
+    applicationName: name,
+  }
 }
 
 export const viewport: Viewport = {
@@ -46,19 +53,25 @@ export const viewport: Viewport = {
 // Everything is read from the local database at request time
 export const dynamic = "force-dynamic"
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const locale = await getLocale()
+  const messages = await getMessages()
+  const resolvedLocale = isLocale(locale) ? locale : "zh"
+
   return (
     <html
-      lang="en"
+      lang={resolvedLocale}
       suppressHydrationWarning
       className={cn(inter.variable, mono.variable)}
     >
       {/* Browser extensions add attributes to <body> before React loads */}
       <body suppressHydrationWarning>
-        <ThemeProvider>
-          <TooltipProvider delay={300}>{children}</TooltipProvider>
-          <Toaster />
-        </ThemeProvider>
+        <NextIntlClientProvider locale={resolvedLocale} messages={messages}>
+          <ThemeProvider>
+            <TooltipProvider delay={300}>{children}</TooltipProvider>
+            <Toaster />
+          </ThemeProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   )

@@ -13,6 +13,8 @@ export const UPSTREAM_REPOSITORY_URL = `https://github.com/${UPSTREAM_REPOSITORY
 
 // The downstream product. This is the fork, its brand and its update channel.
 export const PRODUCT_NAME = "Chuck Bot"
+// Lowercase slug used for the wordmark and any all-lowercase brand rendering.
+export const PRODUCT_SLUG = "chuckbot"
 export const PRODUCT_REPOSITORY = "tm7209519-glitch/chuck-bot"
 export const PRODUCT_REPOSITORY_URL = `https://github.com/${PRODUCT_REPOSITORY}`
 
