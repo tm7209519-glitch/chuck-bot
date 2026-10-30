@@ -3,6 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import {
   ActivityIcon,
   AlarmClockIcon,
@@ -96,6 +97,7 @@ function Item({
   title,
   subtitle,
   busy,
+  workingLabel,
   onNavigate,
 }: {
   href: string
@@ -104,6 +106,7 @@ function Item({
   title: string
   subtitle?: string | null
   busy?: boolean
+  workingLabel?: string
   onNavigate?: () => void
 }) {
   return (
@@ -130,7 +133,7 @@ function Item({
       </span>
       {busy && (
         <span
-          title="Working"
+          title={workingLabel}
           className="size-1.5 shrink-0 animate-pulse-dot rounded-full bg-rigel text-rigel"
         />
       )}
@@ -167,6 +170,7 @@ function FooterLink({
 }
 
 export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
+  const t = useTranslations("sidebar")
   const { nav, status, openAgentDialog, openSquadDialog, openPalette } = useWorkspace()
   const pathname = usePathname()
   const router = useRouter()
@@ -193,7 +197,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
               href={REPOSITORY_URL}
               target="_blank"
               rel="noreferrer"
-              title="Star Xiryn on GitHub"
+              title={t("starOnGitHub")}
               className="flex items-center gap-1 rounded-sm border px-1.5 py-px font-mono text-[10px] text-muted-foreground transition-colors hover:border-betelgeuse/40 hover:text-betelgeuse"
             >
               <StarIcon className="size-2.5 fill-current" />
@@ -207,13 +211,13 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
               rel="noreferrer"
               title={
                 updates.behind
-                  ? `${updates.behind} new commit${updates.behind === 1 ? "" : "s"} on GitHub — see how to update`
-                  : `Xiryn ${updates.latestVersion} is out — see how to update`
+                  ? t("newCommits", { count: updates.behind })
+                  : t("newVersion", { version: updates.latestVersion ?? "" })
               }
               className="flex items-center gap-1 rounded-sm border border-betelgeuse/40 bg-betelgeuse-soft px-1.5 py-px font-mono text-[10px] text-betelgeuse transition-colors hover:bg-betelgeuse/20"
             >
               <ArrowUpCircleIcon className="size-2.5" />
-              update
+              {t("update")}
             </a>
           ) : (
             <span className="rounded-sm border px-1.5 py-px font-mono text-[10px] text-muted-foreground">
@@ -230,17 +234,17 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
           className="flex h-8 w-full items-center gap-2 rounded-md border bg-background/60 px-2.5 text-[13px] text-muted-foreground transition-colors hover:border-input hover:text-foreground"
         >
           <SearchIcon className="size-3.5" />
-          Jump to…
+          {t("jumpTo")}
           <Kbd className="ml-auto font-mono text-[10px]">⌘K</Kbd>
         </button>
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto pb-4">
         <Section
-          label="Agents"
+          label={t("agents")}
           count={nav.agents.length}
           onAdd={() => openAgentDialog()}
-          addLabel="New agent"
+          addLabel={t("newAgent")}
         >
           {nav.agents.length === 0 ? (
             <button
@@ -249,7 +253,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
               className="mx-0 flex items-center gap-2 rounded-md border border-dashed px-2.5 py-2 text-left text-[12.5px] text-muted-foreground transition-colors hover:border-input hover:text-foreground"
             >
               <PlusIcon className="size-3.5" />
-              Create your first agent
+              {t("createFirstAgent")}
             </button>
           ) : (
             nav.agents.map((agent) => (
@@ -265,6 +269,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
                 title={agent.name}
                 subtitle={agent.role}
                 busy={agent.busy}
+                workingLabel={t("working")}
                 onNavigate={onNavigate}
               />
             ))
@@ -272,16 +277,14 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         </Section>
 
         <Section
-          label="Squads"
+          label={t("squads")}
           count={nav.squads.length}
           onAdd={() => openSquadDialog()}
-          addLabel="New squad"
+          addLabel={t("newSquad")}
         >
           {nav.squads.length === 0 ? (
             <p className="px-2 py-1 text-[12px] text-faint">
-              {nav.agents.length < 2
-                ? "Two or more agents can work as a squad."
-                : "Group agents so they can hand work to each other."}
+              {nav.agents.length < 2 ? t("squadNeedTwo") : t("squadGroupAgents")}
             </p>
           ) : (
             nav.squads.map((squad) => (
@@ -295,8 +298,9 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
                 active={pathname.startsWith(`/s/${squad.id}`)}
                 icon={<SquadGlyph seeds={squad.glyphs} className="size-[26px]" />}
                 title={squad.name}
-                subtitle={`${squad.agentIds.length} agent${squad.agentIds.length === 1 ? "" : "s"}`}
+                subtitle={t("agentsUnit", { count: squad.agentIds.length })}
                 busy={squad.busy}
+                workingLabel={t("working")}
                 onNavigate={onNavigate}
               />
             ))
@@ -304,7 +308,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         </Section>
 
         {recent.length > 0 && (
-          <Section label="Recent threads">
+          <Section label={t("recentThreads")}>
             {recent.map((thread) => {
               const owner = ownerOf(thread)
               const base = thread.agentId
@@ -331,7 +335,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
                       )}
                     />
                     <span className="min-w-0 flex-1 truncate">
-                      {thread.title ?? "New thread"}
+                      {thread.title ?? t("newThread")}
                     </span>
                     <span className="shrink-0 font-mono text-[10px] text-faint transition-opacity group-hover/thread:opacity-0">
                       {owner && "name" in owner ? owner.name.slice(0, 10) : ""}
@@ -341,18 +345,22 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
                     trigger={
                       <button
                         type="button"
-                        aria-label={`Delete thread ${thread.title ?? "New thread"}`}
+                        aria-label={t("deleteThreadAria", {
+                          title: thread.title ?? t("newThread"),
+                        })}
                         className="absolute top-1/2 right-1 grid size-5 -translate-y-1/2 place-items-center rounded-sm text-faint opacity-0 transition-opacity group-hover/thread:opacity-100 hover:bg-accent hover:text-destructive focus-visible:opacity-100"
                       >
                         <Trash2Icon className="size-3.5" />
                       </button>
                     }
-                    title="Delete this thread?"
-                    description={`"${thread.title ?? "New thread"}" and its messages are deleted. The agent, its memory and its workstation stay.`}
-                    action="Delete thread"
+                    title={t("deleteThreadTitle")}
+                    description={t("deleteThreadDesc", {
+                      title: thread.title ?? t("newThread"),
+                    })}
+                    action={t("deleteThreadAction")}
                     onConfirm={async () => {
                       await deleteThread(thread.id)
-                      toast.add({ type: "success", title: "Thread deleted" })
+                      toast.add({ type: "success", title: t("threadDeleted") })
                       if (pathname.endsWith(thread.id)) router.push(base)
                     }}
                   />
@@ -366,11 +374,11 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
       <div className="flex flex-col gap-px border-t p-2">
         <FooterLink href="/templates" pathname={pathname} onNavigate={onNavigate}>
           <LayoutGridIcon className="size-4" />
-          Templates
+          {t("templates")}
         </FooterLink>
         <FooterLink href="/routines" pathname={pathname} onNavigate={onNavigate}>
           <AlarmClockIcon className="size-4" />
-          Routines
+          {t("routines")}
         </FooterLink>
         <Link
           href="/usage"
@@ -383,7 +391,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
           )}
         >
           <ActivityIcon className="size-4" />
-          Usage
+          {t("usage")}
         </Link>
         <div className="flex items-center gap-1">
           <Link
@@ -397,10 +405,10 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
             )}
           >
             <SettingsIcon className="size-4" />
-            Settings
+            {t("settings")}
             {!status.ready && (
               <span
-                title="Setup incomplete"
+                title={t("setupIncomplete")}
                 className="ml-auto size-1.5 rounded-full bg-betelgeuse"
               />
             )}
@@ -408,23 +416,23 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
           <Tooltip>
             <TooltipTrigger
               render={<a href={feedbackMailto(feedback)} />}
-              aria-label="Send feedback"
+              aria-label={t("sendFeedback")}
               className="grid size-8 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-accent/60 hover:text-foreground"
             >
               <MailIcon className="size-4" />
             </TooltipTrigger>
-            <TooltipContent side="top">Send feedback</TooltipContent>
+            <TooltipContent side="top">{t("sendFeedback")}</TooltipContent>
           </Tooltip>
           <Tooltip>
             <TooltipTrigger
               onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-              aria-label="Toggle theme"
+              aria-label={t("toggleTheme")}
               className="grid size-8 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-accent/60 hover:text-foreground"
             >
               <SunIcon className="hidden size-4 dark:block" />
               <MoonIcon className="size-4 dark:hidden" />
             </TooltipTrigger>
-            <TooltipContent side="top">Toggle theme</TooltipContent>
+            <TooltipContent side="top">{t("toggleTheme")}</TooltipContent>
           </Tooltip>
         </div>
       </div>
