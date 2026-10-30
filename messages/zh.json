@@ -152,5 +152,39 @@
     "interrupted": "已中断",
     "workstationScreen": "工作站屏幕",
     "screenAfterAction": "此操作之后的屏幕"
+  },
+  "pages": {
+    "templates": {
+      "kicker": "// 模板 · {agents} 个 agent · {squads} 个 squad",
+      "title": "模板",
+      "description": "现成的 Agent，带着常见工作的固定指令。选一个在编辑器里打开：在上线前重命名、改指令或给它自己的模型。每个都有自己的桌面和记忆，和任何 Agent 一样。"
+    },
+    "routines": {
+      "kicker": "// 例行任务 · {count} 个开启",
+      "title": "例行任务",
+      "description": "你的 Agent 按计划自动执行的任务：每天早上的新闻简报、工作日的工作提醒、每天傍晚的价格检查。它们在 Chuck Bot 打开时运行在这台电脑上，发布到自己的会话里，如果连了 Telegram 还会推送到手机。"
+    },
+    "usage": {
+      "kicker": "// 账本 · 最近 {days} 天",
+      "title": "用量",
+      "description": "每个 Agent 会话都记录在本地：运行所用的模型、消耗的 token 和成本。本地模型免费。你的提供商直接向你收费——Chuck Bot 只是记账。",
+      "spent": "支出",
+      "turns": "会话数",
+      "inputTokens": "输入 token",
+      "outputTokens": "输出 token",
+      "toolCalls": "工具调用",
+      "tokensPerDay": "每日 token",
+      "byModel": "按模型",
+      "byAgent": "按 agent",
+      "recentTurns": "最近会话",
+      "noTurnsYet": "还没有会话。",
+      "nothingYet": "还没有记录。和 Agent 对话，会话就会出现在这里。"
+    },
+    "notFound": {
+      "kicker": "// 404 · 无信号",
+      "title": "这里什么都没有。",
+      "description": "你找的 agent、squad 或会话不存在——它可能已被删除。",
+      "backToOverview": "← 返回概览"
+    }
   }
 }

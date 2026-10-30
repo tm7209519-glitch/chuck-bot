@@ -152,5 +152,39 @@
     "interrupted": "interrupted",
     "workstationScreen": "Workstation screen",
     "screenAfterAction": "The screen just after this action"
+  },
+  "pages": {
+    "templates": {
+      "kicker": "// templates · {agents} agents · {squads} squads",
+      "title": "Templates",
+      "description": "Ready-made agents with standing orders for common jobs. Pick one to open it in the editor: rename it, change its orders or give it its own model before it goes online. Each gets its own desktop and memory, like any agent."
+    },
+    "routines": {
+      "kicker": "// routines · {count} on",
+      "title": "Routines",
+      "description": "Tasks your agents do on their own, on a schedule: a news brief every morning, job alerts on weekdays, a price check every evening. They run on this computer while Chuck Bot is open, post into their own thread, and reach your phone through Telegram if it's connected."
+    },
+    "usage": {
+      "kicker": "// ledger · last {days} days",
+      "title": "Usage",
+      "description": "Every agent turn is recorded locally: the model it ran on, the tokens it consumed and what that cost. Local models are free. Your providers bill you directly — Chuck Bot just keeps the receipts.",
+      "spent": "spent",
+      "turns": "turns",
+      "inputTokens": "input tokens",
+      "outputTokens": "output tokens",
+      "toolCalls": "tool calls",
+      "tokensPerDay": "tokens per day",
+      "byModel": "by model",
+      "byAgent": "by agent",
+      "recentTurns": "recent turns",
+      "noTurnsYet": "No turns yet.",
+      "nothingYet": "Nothing yet. Talk to an agent and its turns land here."
+    },
+    "notFound": {
+      "kicker": "// 404 · no signal",
+      "title": "Nothing out here.",
+      "description": "The agent, squad or thread you're looking for doesn't exist — it may have been deleted.",
+      "backToOverview": "← back to overview"
+    }
   }
 }

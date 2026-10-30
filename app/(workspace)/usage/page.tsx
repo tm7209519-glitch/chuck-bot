@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { format, formatDistanceToNowStrict, subDays } from "date-fns"
+import { getTranslations } from "next-intl/server"
 
 import { Glyph } from "@/components/glyph"
 import { BudgetCard, PriceButton } from "@/components/usage/spend-controls"
@@ -27,7 +28,8 @@ function Stat({ label, value, hint }: { label: string; value: string; hint?: str
   )
 }
 
-export default function Page() {
+export default async function Page() {
+  const t = await getTranslations("pages.usage")
   const usage = getUsage(30)
   const { totals } = usage
 
@@ -50,18 +52,16 @@ export default function Page() {
     <div className="min-h-0 flex-1 overflow-y-auto">
       <div className="mx-auto flex max-w-5xl flex-col gap-10 px-6 py-12">
         <header className="flex flex-col gap-2">
-          <span className="label-mono">{`// ledger · last ${usage.days} days`}</span>
-          <h1 className="text-2xl font-semibold tracking-tight">Usage</h1>
+          <span className="label-mono">{t("kicker", { days: usage.days })}</span>
+          <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
           <p className="max-w-2xl text-[13.5px] leading-relaxed text-muted-foreground">
-            Every agent turn is recorded locally: the model it ran on, the tokens it
-            consumed and what that cost. Local models are free. Your providers bill you
-            directly — Xiryn just keeps the receipts.
+            {t("description")}
           </p>
         </header>
 
         <div className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border bg-border sm:grid-cols-3 lg:grid-cols-5">
           <Stat
-            label="spent"
+            label={t("spent")}
             value={formatUsd(usage.spend.total)}
             hint={
               usage.spend.unpriced
@@ -74,17 +74,17 @@ export default function Page() {
             }
           />
           <Stat
-            label="turns"
+            label={t("turns")}
             value={compact.format(totals.turns)}
             hint={totals.failed ? `${totals.failed} failed` : "all clean"}
           />
           <Stat
-            label="input tokens"
+            label={t("inputTokens")}
             value={compact.format(totals.input)}
             hint={totals.cached ? `${compact.format(totals.cached)} cached` : undefined}
           />
           <Stat
-            label="output tokens"
+            label={t("outputTokens")}
             value={compact.format(totals.output)}
             hint={
               totals.reasoning
@@ -93,7 +93,7 @@ export default function Page() {
             }
           />
           <Stat
-            label="tool calls"
+            label={t("toolCalls")}
             value={compact.format(totals.toolCalls)}
             hint={
               totals.turns
@@ -106,7 +106,7 @@ export default function Page() {
         <BudgetCard spent={usage.spend.month} budget={usage.budget} />
 
         <section className="flex flex-col gap-3">
-          <h2 className="label-mono">tokens per day</h2>
+          <h2 className="label-mono">{t("tokensPerDay")}</h2>
           <div className="rounded-xl border bg-surface/50 p-4">
             <div className="flex h-40 items-end gap-[3px]">
               {days.map((day) => (
@@ -141,10 +141,10 @@ export default function Page() {
 
         <div className="grid gap-6 lg:grid-cols-2">
           <section className="flex flex-col gap-3">
-            <h2 className="label-mono">by model</h2>
+            <h2 className="label-mono">{t("byModel")}</h2>
             <div className="divide-y rounded-xl border bg-surface/50 font-mono text-[12px]">
               {usage.byModel.length === 0 && (
-                <p className="px-4 py-3 text-muted-foreground">No turns yet.</p>
+                <p className="px-4 py-3 text-muted-foreground">{t("noTurnsYet")}</p>
               )}
               {usage.byModel.map((row) => (
                 <div key={row.model} className="flex items-baseline gap-3 px-4 py-2.5">
@@ -174,10 +174,12 @@ export default function Page() {
             </div>
           </section>
           <section className="flex flex-col gap-3">
-            <h2 className="label-mono">by agent</h2>
+            <h2 className="label-mono">{t("byAgent")}</h2>
             <div className="divide-y rounded-xl border bg-surface/50 text-[12px]">
               {usage.byAgent.length === 0 && (
-                <p className="px-4 py-3 font-mono text-muted-foreground">No turns yet.</p>
+                <p className="px-4 py-3 font-mono text-muted-foreground">
+                  {t("noTurnsYet")}
+                </p>
               )}
               {usage.byAgent.map((row) => (
                 <div key={row.agentId} className="flex items-center gap-3 px-4 py-2">
@@ -201,7 +203,7 @@ export default function Page() {
         </div>
 
         <section className="flex flex-col gap-3">
-          <h2 className="label-mono">recent turns</h2>
+          <h2 className="label-mono">{t("recentTurns")}</h2>
           <div className="overflow-x-auto rounded-xl border bg-surface/50">
             <table className="w-full font-mono text-[11.5px]">
               <thead>
@@ -227,7 +229,7 @@ export default function Page() {
                 {usage.recent.length === 0 && (
                   <tr>
                     <td colSpan={9} className="px-3 py-4 text-muted-foreground">
-                      Nothing yet. Talk to an agent and its turns land here.
+                      {t("nothingYet")}
                     </td>
                   </tr>
                 )}
