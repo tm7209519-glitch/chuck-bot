@@ -17,6 +17,7 @@ const path = require("node:path")
 const fs = require("node:fs")
 const http = require("node:http")
 const { registerIpc } = require("./ipc")
+const { registerUpdaterIpc } = require("./updater")
 const { probeDocker, launchDesktop } = require("./docker")
 
 const APP_URL = process.env.CHUCK_BOT_URL || "http://127.0.0.1:6796"
@@ -230,6 +231,7 @@ function showWindow() {
 app.whenReady().then(async () => {
   fs.mkdirSync(userDataDir(), { recursive: true })
   registerIpc()
+  registerUpdaterIpc()
 
   startService()
   const ready = await waitForReady()

@@ -9,11 +9,13 @@
   "scripts": {
     "start": "electron .",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "release": "electron-builder --publish always"
   },
   "devDependencies": {
     "electron": "^33.0.0",
-    "electron-builder": "^25.0.0"
+    "electron-builder": "^25.0.0",
+    "electron-updater": "^6.3.0"
   },
   "build": {
     "appId": "com.chuckbot.desktop",
@@ -30,6 +32,11 @@
     "asarUnpack": [
       "**/*.node"
     ],
+    "publish": {
+      "provider": "github",
+      "owner": "tm7209519-glitch",
+      "repo": "chuck-bot"
+    },
     "win": {
       "target": "nsis"
     },

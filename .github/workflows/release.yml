@@ -1,0 +1,77 @@
+name: Release
+
+# Builds and publishes the Chuck Bot desktop client for Windows (and later
+# macOS) to GitHub Releases. The desktop shell bundles the Next.js app and a
+# Node runtime, so this first builds the web app, then assembles it, then
+# runs electron-builder with the `publish: github` config in desktop/package.json.
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build on ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest]
+        include:
+          - os: windows-latest
+            artifact: chuck-bot-setup.exe
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      # 1. Build the Next.js web app (production).
+      - run: npm ci
+      - run: npm run build
+
+      # 2. Assemble the web app + assets into desktop/resources/app-root.
+      #    Node runtime is downloaded separately (see the download-node step).
+      - name: Assemble app bundle
+        run: node desktop/scripts/bundle-app.mjs
+
+      # 3. Download a portable Node runtime to ship inside the client so the
+      #    end user does not need Node installed. (Windows amd64 zip)
+      - name: Download Node runtime
+        shell: bash
+        run: |
+          NODE_VERSION=$(cat .nvmrc)
+          curl -fsSL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-win-x64.zip" -o node.zip
+          unzip -q node.zip
+          mkdir -p desktop/resources/node
+          cp -r "node-v${NODE_VERSION}-win-x64/"* desktop/resources/node/
+          echo "node runtime bundled: $(desktop/resources/node/node.exe --version)"
+
+      # 4. Install desktop deps and build/publish the installer.
+      - name: Install desktop deps
+        working-directory: desktop
+        run: npm ci
+
+      # Signing is enabled automatically when the cert secrets are present.
+      #   - WIN_CSC_LINK         (base64 of the .pfx, or a path)
+      #   - WIN_CSC_KEY_PASSWORD (the .pfx password)
+      # Without them, electron-builder builds an unsigned installer, which is
+      # fine for a pre-release channel but not for stable.
+      - name: Build and publish
+        working-directory: desktop
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
+          WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
+        run: npm run release
