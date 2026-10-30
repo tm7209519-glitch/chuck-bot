@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import type { ChatStatus } from "ai"
+import { useTranslations } from "next-intl"
 import {
   AlarmClockIcon,
   ArrowDownIcon,
@@ -65,9 +66,10 @@ function segments(message: XirynMessage, members: AgentLite[]) {
 // What a reply cost: priced when it ran, or estimated from today's prices
 // for replies saved before costs were recorded
 function ReplyCost({ meta }: { meta: NonNullable<XirynMessage["metadata"]> }) {
+  const t = useTranslations("thread")
   if (!meta.model) return null
   if (isFree(meta.model)) {
-    return <span className="text-ok">free · local</span>
+    return <span className="text-ok">{t("freeLocal")}</span>
   }
   if (typeof meta.cost === "number") {
     return (
@@ -87,13 +89,14 @@ function formatTokens(n: number) {
 }
 
 function Reasoning({ text, streaming }: { text: string; streaming: boolean }) {
+  const t = useTranslations("thread")
   if (!text.trim() && !streaming) return null
   return (
     <Collapsible className="group/reasoning">
       <CollapsibleTrigger className="flex items-center gap-1.5 font-mono text-[11.5px] text-muted-foreground hover:text-foreground">
         <BrainIcon className="size-3.5" />
         <span className={cn(streaming && "shimmer-text")}>
-          {streaming ? "thinking" : "thought"}
+          {streaming ? t("thinking") : t("thought")}
         </span>
         <ChevronRightIcon className="size-3 transition-transform group-data-open/reasoning:rotate-90" />
       </CollapsibleTrigger>
@@ -175,6 +178,7 @@ function UserMessage({
   message: XirynMessage
   addressee?: AgentLite
 }) {
+  const t = useTranslations("thread")
   const text = message.parts
     .flatMap((part) => (part.type === "text" ? [part.text] : []))
     .join("\n")
@@ -188,7 +192,7 @@ function UserMessage({
           <span className="h-px flex-1 bg-betelgeuse/25" />
           <span className="flex items-center gap-1.5 font-mono text-[11px] text-betelgeuse">
             <Undo2Icon className="size-3.5" />
-            you handed the desktop back
+            {t("handedDesktopBack")}
           </span>
           <span className="h-px flex-1 bg-betelgeuse/25" />
         </div>
@@ -205,10 +209,10 @@ function UserMessage({
   const vault = message.metadata?.vault
   if (vault) {
     const said = {
-      approved: "you approved",
-      declined: "you declined",
-      "taken-over": "you're paying yourself",
-      provided: "you added to the vault",
+      approved: t("youApproved"),
+      declined: t("youDeclined"),
+      "taken-over": t("payingYourself"),
+      provided: t("addedToVault"),
     }[vault.action]
     return (
       <div className="flex w-full items-center gap-3">
@@ -236,18 +240,19 @@ function UserMessage({
           <span className="flex items-center gap-1.5 font-mono text-[10.5px] text-muted-foreground">
             {message.metadata?.routine && (
               <span className="flex items-center gap-1 text-rigel">
-                <AlarmClockIcon className="size-3" /> routine ·{" "}
+                <AlarmClockIcon className="size-3" /> {t("routine")} ·{" "}
                 {message.metadata.routine.name}
               </span>
             )}
             {message.metadata?.via === "telegram" && (
               <span className="flex items-center gap-1 text-rigel">
-                <SendIcon className="size-3" /> via telegram
+                <SendIcon className="size-3" /> {t("viaTelegram")}
               </span>
             )}
             {addressee && (
               <>
-                to <Glyph seed={addressee.glyph} className="size-3.5 rounded-[3px]" />{" "}
+                {t("to")}{" "}
+                <Glyph seed={addressee.glyph} className="size-3.5 rounded-[3px]" />{" "}
                 {addressee.name}
               </>
             )}
@@ -273,6 +278,7 @@ function AgentMessage({
   // The latest message, finished: its requests can still be answered
   awaiting?: boolean
 }) {
+  const t = useTranslations("thread")
   const parts = segments(message, members)
   const meta = message.metadata
   const working =
@@ -286,7 +292,7 @@ function AgentMessage({
           {segment.via && (
             <div className="flex items-center gap-2 font-mono text-[11px] text-betelgeuse">
               <CornerDownRightIcon className="size-3.5" />
-              {segment.via.name} delegated to {segment.author.name}
+              {t("delegatedTo", { from: segment.via.name, to: segment.author.name })}
               <span className="h-px flex-1 bg-betelgeuse/25" />
             </div>
           )}
@@ -299,7 +305,7 @@ function AgentMessage({
           </div>
           <div className="pl-[30px]">
             {working && i === 0 ? (
-              <span className="shimmer-text font-mono text-[12px]">working…</span>
+              <span className="shimmer-text font-mono text-[12px]">{t("working")}</span>
             ) : (
               <Parts
                 parts={segment.parts}
@@ -315,7 +321,10 @@ function AgentMessage({
           {meta.model && <span>{meta.model}</span>}
           {meta.usage && (
             <span>
-              {formatTokens(meta.usage.input)} in · {formatTokens(meta.usage.output)} out
+              {t("inOut", {
+                inCount: formatTokens(meta.usage.input),
+                outCount: formatTokens(meta.usage.output),
+              })}
             </span>
           )}
           <ReplyCost meta={meta} />
@@ -329,6 +338,7 @@ function AgentMessage({
 }
 
 function ScrollToBottom() {
+  const t = useTranslations("thread")
   const { isAtBottom, scrollToBottom } = useStickToBottomContext()
   if (isAtBottom) return null
   return (
@@ -336,7 +346,7 @@ function ScrollToBottom() {
       type="button"
       onClick={() => scrollToBottom()}
       className="absolute bottom-4 left-1/2 grid size-8 -translate-x-1/2 place-items-center rounded-full border bg-popover text-muted-foreground shadow-md hover:text-foreground"
-      aria-label="Scroll to latest"
+      aria-label={t("scrollToLatest")}
     >
       <ArrowDownIcon className="size-4" />
     </button>
@@ -358,6 +368,7 @@ export function Transcript({
   empty: React.ReactNode
   footer?: React.ReactNode
 }) {
+  const t = useTranslations("thread")
   const busy = status === "submitted" || status === "streaming"
   const last = messages[messages.length - 1]
 
@@ -389,7 +400,7 @@ export function Transcript({
         {status === "submitted" && last?.role === "user" && (
           <div className="flex items-center gap-2 pl-[30px] font-mono text-[12px]">
             <span className="size-1.5 animate-pulse-dot rounded-full bg-rigel text-rigel" />
-            <span className="shimmer-text">booting turn…</span>
+            <span className="shimmer-text">{t("bootingTurn")}</span>
           </div>
         )}
         {footer}

@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { ArrowUpIcon, ChevronDownIcon, MicIcon, SquareIcon } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 import { Glyph } from "@/components/glyph"
 import { ModelSpecLabel } from "@/components/model-picker"
@@ -39,6 +40,7 @@ export function Composer({
   modelSpec: string | null
   draftKey: string
 }) {
+  const t = useTranslations("thread")
   const [text, setText] = React.useState("")
   const ref = React.useRef<HTMLTextAreaElement>(null)
 
@@ -134,7 +136,9 @@ export function Composer({
           {members && addressee && onAddresseeChange ? (
             <DropdownMenu>
               <DropdownMenuTrigger className="flex h-7 items-center gap-1.5 rounded-md border bg-background/50 px-2 text-[12px] hover:bg-accent">
-                <span className="font-mono text-[10.5px] text-muted-foreground">to</span>
+                <span className="font-mono text-[10.5px] text-muted-foreground">
+                  {t("to")}
+                </span>
                 <Glyph seed={addressee.glyph} className="size-4 rounded-[4px]" />
                 {addressee.name}
                 <ChevronDownIcon className="size-3 text-muted-foreground" />
@@ -166,23 +170,23 @@ export function Composer({
           {listening ? (
             <span className="ml-auto flex items-center gap-1.5 font-mono text-[10.5px] text-destructive">
               <span className="size-1.5 animate-pulse-dot rounded-full bg-destructive text-destructive" />
-              {dictation.state === "starting" ? "starting…" : "listening"}
+              {dictation.state === "starting" ? t("starting") : t("listening")}
               <span className="hidden text-faint sm:inline">
-                · {dictation.local ? "on this device" : "your browser's speech service"}
+                · {dictation.local ? t("onThisDevice") : t("browserSpeech")}
               </span>
             </span>
           ) : (
             <span className="ml-auto hidden font-mono text-[10.5px] text-faint sm:inline">
-              ↵ send · ⇧↵ newline
+              {t("sendShortcut")}
             </span>
           )}
           {dictation.state !== "unsupported" && (
             <button
               type="button"
               onClick={() => (listening ? dictation.stop() : startDictation())}
-              aria-label={listening ? "Stop voice typing" : "Voice typing"}
+              aria-label={listening ? t("stopVoiceTyping") : t("voiceTyping")}
               aria-pressed={listening}
-              title={listening ? "Stop voice typing" : "Speak your message"}
+              title={listening ? t("stopVoiceTyping") : t("speakYourMessage")}
               disabled={disabled}
               className={cn(
                 "relative grid size-8 place-items-center rounded-lg border transition-colors disabled:opacity-30",
@@ -201,7 +205,7 @@ export function Composer({
             <button
               type="button"
               onClick={onStop}
-              aria-label="Stop the agent"
+              aria-label={t("stopAgent")}
               className="grid size-8 place-items-center rounded-lg border bg-background text-foreground transition-colors hover:bg-accent"
             >
               <SquareIcon className="size-3 fill-current" />
@@ -209,7 +213,7 @@ export function Composer({
           ) : (
             <button
               type="submit"
-              aria-label="Send"
+              aria-label={t("send")}
               disabled={!text.trim() || disabled}
               className="grid size-8 place-items-center rounded-lg bg-primary text-primary-foreground transition-opacity disabled:opacity-30"
             >

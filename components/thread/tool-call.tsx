@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useTranslations } from "next-intl"
 import {
   AlarmClockIcon,
   BrainIcon,
@@ -166,6 +167,7 @@ function Screenshot({
 }
 
 function Details({ part }: { part: ToolPart }) {
+  const t = useTranslations("thread")
   const name = toolName(part)
   const input = (part.input ?? {}) as Record<string, unknown>
   const output =
@@ -193,11 +195,11 @@ function Details({ part }: { part: ToolPart }) {
           {output && (
             <Pre>
               {str(output.output) || (
-                <span className="text-muted-foreground">(no output)</span>
+                <span className="text-muted-foreground">{t("noOutput")}</span>
               )}
               {"\n"}
               <span className={output.exitCode === 0 ? "text-ok" : "text-destructive"}>
-                exit {String(output.exitCode)}
+                {t("exit", { code: String(output.exitCode) })}
               </span>
             </Pre>
           )}
@@ -231,10 +233,10 @@ function Details({ part }: { part: ToolPart }) {
         <Screenshot
           image={str(output.image)}
           mediaType={str(output.mediaType) || "image/jpeg"}
-          alt="Workstation screen"
+          alt={t("workstationScreen")}
         />
       ) : (
-        <p className="text-[12px] text-muted-foreground">Screenshot not kept.</p>
+        <p className="text-[12px] text-muted-foreground">{t("screenshotNotKept")}</p>
       )
     case "pointer_click":
     case "pointer_move":
@@ -249,11 +251,11 @@ function Details({ part }: { part: ToolPart }) {
             <Screenshot
               image={str(output.image)}
               mediaType={str(output.mediaType) || "image/jpeg"}
-              alt="The screen just after this action"
+              alt={t("screenAfterAction")}
             />
           ) : (
             <p className="text-[12px] text-muted-foreground">
-              Screenshot after this step not kept.
+              {t("screenshotAfterNotKept")}
             </p>
           )}
         </div>
@@ -307,7 +309,7 @@ function Details({ part }: { part: ToolPart }) {
           {output && (
             <span className="font-mono text-[11px] text-rigel">
               {str(output.when)}
-              {output.nextRun ? ` · next ${str(output.nextRun)}` : ""}
+              {output.nextRun ? ` · ${t("nextRun", { when: str(output.nextRun) })}` : ""}
             </span>
           )}
           <p>{str(input.task)}</p>
@@ -316,7 +318,7 @@ function Details({ part }: { part: ToolPart }) {
               href="/routines"
               className="w-fit font-mono text-[11px] text-muted-foreground hover:text-foreground"
             >
-              manage in routines →
+              {t("manageInRoutines")}
             </a>
           )}
         </div>
@@ -340,30 +342,26 @@ function duration(part: ToolPart) {
 
 // The agent paused and handed its desktop to the person
 function TakeoverRequest({ part }: { part: ToolPart }) {
+  const t = useTranslations("thread")
   const { available, active, start } = useTakeover()
   const reason = String((part.input as { reason?: string } | undefined)?.reason ?? "")
   return (
     <div className="my-1 flex flex-col gap-2.5 rounded-lg border border-betelgeuse/30 bg-betelgeuse-soft p-3.5">
       <span className="flex items-center gap-1.5 font-mono text-[11px] text-betelgeuse">
         <HandIcon className="size-3.5" />
-        needs you at the screen
+        {t("needsYouAtScreen")}
       </span>
       <p className="text-[13.5px] leading-relaxed">{reason}</p>
       {available ? (
         <div className="flex flex-wrap items-center gap-3">
           <Button size="sm" onClick={start} disabled={active}>
             <HandIcon data-icon="inline-start" />
-            {active ? "You have control" : "Take over"}
+            {active ? t("youHaveControl") : t("takeOver")}
           </Button>
-          <span className="text-[12px] text-muted-foreground">
-            Do your part, then hand it back — it carries on from there.
-          </span>
+          <span className="text-[12px] text-muted-foreground">{t("takeOverHint")}</span>
         </div>
       ) : (
-        <p className="text-[12px] text-muted-foreground">
-          Take over from this agent&apos;s own thread (Screen tab), then reply here when
-          you&apos;re done.
-        </p>
+        <p className="text-[12px] text-muted-foreground">{t("takeOverFromThread")}</p>
       )}
     </div>
   )
@@ -379,6 +377,7 @@ export function ToolCall({
   // The latest thing in the thread: a request in it can still be answered
   awaiting?: boolean
 }) {
+  const t = useTranslations("thread")
   const name = toolName(part)
   const meta = META[name] ?? { icon: SquareTerminalIcon, label: name }
   const Icon = meta.icon
@@ -422,11 +421,11 @@ export function ToolCall({
           <Screenshot
             image={output.image}
             mediaType={output.mediaType}
-            alt="Shared screen"
+            alt={t("sharedScreen")}
           />
         )}
         <figcaption className="font-mono text-[10.5px] text-muted-foreground">
-          shared screen
+          {t("sharedScreen")}
         </figcaption>
       </figure>
     )
@@ -455,7 +454,7 @@ export function ToolCall({
         <span className={cn("shrink-0", running && "shimmer-text")}>{meta.label}</span>
         <span className="min-w-0 truncate text-muted-foreground">{summary}</span>
         <span className="ml-auto flex shrink-0 items-center gap-2 pl-2 text-faint">
-          {interrupted ? "interrupted" : time}
+          {interrupted ? t("interrupted") : time}
           <ChevronRightIcon className="size-3.5 transition-transform group-data-open/tool:rotate-90" />
         </span>
       </CollapsibleTrigger>
