@@ -41,22 +41,23 @@ jobs:
       - run: npm ci
       - run: npm run build
 
-      # 2. Assemble the web app + assets into desktop/resources/app-root.
-      #    Node runtime is downloaded separately (see the download-node step).
-      - name: Assemble app bundle
-        run: node desktop/scripts/bundle-app.mjs
-
-      # 3. Download a portable Node runtime to ship inside the client so the
-      #    end user does not need Node installed. (Windows amd64 zip)
+      # 2. Download the same Node major used by actions/setup-node. Using
+      #    `node --version` here is essential: native modules (better-sqlite3)
+      #    must match the bundled runtime, not a preinstalled system Node.
       - name: Download Node runtime
         shell: bash
         run: |
-          NODE_VERSION=$(cat .nvmrc)
+          NODE_VERSION=$(node --version | sed 's/^v//')
           curl -fsSL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-win-x64.zip" -o node.zip
           unzip -q node.zip
-          mkdir -p desktop/resources/node
-          cp -r "node-v${NODE_VERSION}-win-x64/"* desktop/resources/node/
-          echo "node runtime bundled: $(desktop/resources/node/node.exe --version)"
+          echo "node runtime bundled: $(node-v${NODE_VERSION}-win-x64/node.exe --version)"
+
+      # 3. Assemble the web app, its assets and the matching Node runtime.
+      - name: Assemble app bundle
+        shell: bash
+        run: |
+          NODE_VERSION=$(node --version | sed 's/^v//')
+          node desktop/scripts/bundle-app.mjs --node "node-v${NODE_VERSION}-win-x64"
 
       # 4. Install desktop deps and build/publish the installer.
       - name: Install desktop deps

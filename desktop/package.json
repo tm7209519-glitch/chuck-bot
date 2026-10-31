@@ -13,10 +13,12 @@
     "dist": "electron-builder",
     "release": "electron-builder --publish always"
   },
+  "dependencies": {
+    "electron-updater": "^6.3.0"
+  },
   "devDependencies": {
     "electron": "^33.0.0",
-    "electron-builder": "^25.0.0",
-    "electron-updater": "^6.3.0"
+    "electron-builder": "^25.0.0"
   },
   "build": {
     "appId": "com.chuckbot.desktop",
@@ -27,8 +29,17 @@
     "files": [
       "main/**/*",
       "preload/**/*",
-      "resources/**/*",
       "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "resources/app-root",
+        "to": "app-root"
+      },
+      {
+        "from": "resources/node",
+        "to": "node"
+      }
     ],
     "asarUnpack": [
       "**/*.node"
@@ -46,6 +57,7 @@
       "category": "public.app-category.productivity"
     },
     "nsis": {
+      "artifactName": "${productName}-Setup-${version}.${ext}",
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
     }

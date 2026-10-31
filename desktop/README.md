@@ -62,15 +62,29 @@ cd desktop
 npm run dist   # 生成 Windows NSIS 安装包（dist/ 目录）
 ```
 
-### 真机验证记录（2026-10-30）
+### 真机验证记录（2026-10-31）
 
 - Electron 33.4.11 二进制已下载（`desktop/node_modules/electron/dist/electron.exe`，188MB）。
-- 源码模式 `npm run dev` 已验证：窗口打开 + 4 个 electron 进程 + 拉起 `next start`
-  + 首页 `http://127.0.0.1:6796` 返回 200。
-- `bundle-app.mjs` 已成功组装 `desktop/resources/app-root`（.next + node_modules +
-  workstation/db/public/messages/lib，含 better-sqlite3 原生模块）。
-- **尚未验证**：`electron-builder` 真正出安装包（需跑 `npm run dist`），以及打包后
-  的 `app.isPackaged` 分支（内置 Node 路径、userData 数据目录、auto-updater）。
+- 源码模式已验证：窗口打开、拉起 `next start`、首页返回 200。
+- `electron-builder` 已生成 NSIS 安装包及 `latest.yml`、blockmap。
+- 打包目录版 `dist/win-unpacked/Chuck Bot.exe` 已实际启动，走 `app.isPackaged` 分支。
+- 内置官方 Node 22.22.2（ABI 127）成功启动 Next，与 better-sqlite3 的编译 ABI 一致。
+- 首页和设置页均返回 200；SQLite 位于 `%APPDATA%/chuck-bot-desktop/xiryn-data/xiryn.db`。
+- 写入测试记录后退出、重启，记录仍在；停止测试客户端后其 Next 子进程与 6796 监听消失。
+- `app.asar` 已确认包含 electron-updater，`resources/app-update.yml` 已生成。
+- **尚未验证**：安装器 GUI 的完整安装流程，以及 GitHub Releases 上从旧版下载并安装新版。
+- 本机无代码签名证书；本地测试使用 `--config.win.signAndEditExecutable=false`，因 Windows
+  未开启符号链接权限时 electron-builder 无法解压签名工具。正式 CI 保留签名与图标编辑。
+
+本机构建（Node 版本必须与根目录构建原生模块使用的 Node 一致）：
+
+```powershell
+$nodeVersion = node --version
+curl.exe -fsSL "https://nodejs.org/dist/$nodeVersion/node-$nodeVersion-win-x64.zip" -o desktop/node-runtime.zip
+Expand-Archive desktop/node-runtime.zip desktop -Force
+node desktop/scripts/bundle-app.mjs --node "desktop/node-$nodeVersion-win-x64"
+npm --prefix desktop run dist
+```
 
 ## 当前状态
 

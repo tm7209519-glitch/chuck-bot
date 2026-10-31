@@ -44,10 +44,12 @@ function appRoot() {
 }
 
 function nodeBin() {
-  // Prefer a bundled Node runtime (resources/node), fall back to system node.
   const bundled = process.platform === "win32" ? "node.exe" : "node"
   const bundledPath = path.join(process.resourcesPath, "node", bundled)
   if (fs.existsSync(bundledPath)) return bundledPath
+  if (app.isPackaged) {
+    throw new Error(`Bundled Node runtime is missing: ${bundledPath}`)
+  }
   return process.platform === "win32" ? "node.exe" : "node"
 }
 
@@ -116,13 +118,21 @@ function startService() {
     flags: "a",
   })
 
+  const runtime = nodeBin()
+  const args = [nextBin(), "start", "--hostname", HOST, "--port", String(PORT)]
+  // A portable Node.exe can be launched by filename only while its directory
+  // is on PATH. Use an absolute executable path, and keep Electron's helper
+  // mode from turning the packaged runtime into a plain Node process.
+  const childEnv = { ...process.env }
+  delete childEnv.ELECTRON_RUN_AS_NODE
+  delete childEnv.NODE_OPTIONS
   serverChild = spawn(
-    nodeBin(),
-    [nextBin(), "start", "--hostname", HOST, "--port", String(PORT)],
+    runtime,
+    args,
     {
       cwd: root,
       env: {
-        ...process.env,
+        ...childEnv,
         NODE_ENV: "production",
         XIRYN_DATA_DIR: dataDir,
         // The app's own update checker points at GitHub; the desktop shell
@@ -235,6 +245,9 @@ app.whenReady().then(async () => {
 
   startService()
   const ready = await waitForReady()
+  if (serverChild) {
+    console.log(`[chuck-bot] Next service pid=${serverChild.pid}, runtime=${nodeBin()}`)
+  }
 
   createWindow()
   createTray()
