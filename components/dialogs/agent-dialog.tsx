@@ -71,18 +71,18 @@ function AgentForm({ agent, template }: { agent?: NavAgent; template?: AgentTemp
     try {
       if (agent) {
         const updated = await updateAgent(agent.id, values)
-        toast.add({ type: "success", title: `${updated.name} updated` })
+        toast.add({ type: "success", title: `${updated.name} 已更新` })
         closeDialog()
       } else {
         const { agent: created, threadId } = await createAgent(values)
-        toast.add({ type: "success", title: `${created.name} is online` })
+        toast.add({ type: "success", title: `${created.name} 已上线` })
         closeDialog()
         router.push(`/a/${created.id}/${threadId}`)
       }
     } catch (error) {
       toast.add({
         type: "error",
-        title: agent ? "Couldn't save the agent" : "Couldn't create the agent",
+        title: agent ? "无法保存 Agent" : "无法创建 Agent",
         description: error instanceof Error ? error.message : undefined,
       })
     }
@@ -94,22 +94,22 @@ function AgentForm({ agent, template }: { agent?: NavAgent; template?: AgentTemp
     <form onSubmit={onSubmit} className="flex min-h-0 flex-col">
       <DialogHeader className="gap-1 border-b px-5 pt-5 pb-4">
         <span className="label-mono">
-          {agent ? "// configure agent" : "// new agent"}
+          {agent ? "// 配置 Agent" : "// 新建 Agent"}
         </span>
         <DialogTitle className="text-lg font-semibold tracking-tight">
-          {agent ? agent.name : "Create an agent"}
+          {agent ? agent.name : "创建一个 Agent"}
         </DialogTitle>
         <DialogDescription>
           {agent
-            ? "Identity, standing orders and the model it thinks with."
-            : "An agent gets its own workstation, its own memory and the model you pick."}
+            ? "身份、固定指令以及它思考所用的模型。"
+            : "每个 Agent 都有自己的工作站、自己的记忆，以及你挑选的模型。"}
         </DialogDescription>
       </DialogHeader>
 
       <div className="flex min-h-0 flex-col gap-5 overflow-y-auto px-5 py-5">
         {!agent && (
           <div className="flex flex-col gap-2">
-            <span className="label-mono">Start from</span>
+            <span className="label-mono">从模板开始</span>
             <div className="grid max-h-[148px] grid-cols-2 gap-2 overflow-y-auto pr-1 sm:grid-cols-4">
               {agentTemplates.map((preset) => (
                 <button
@@ -142,7 +142,7 @@ function AgentForm({ agent, template }: { agent?: NavAgent; template?: AgentTemp
                     className="inline-flex items-center gap-1 font-mono text-[10.5px] text-muted-foreground hover:text-foreground"
                   >
                     <ShuffleIcon className="size-3" />
-                    reroll
+                    换一个
                   </button>
                 </div>
               )}
@@ -153,7 +153,7 @@ function AgentForm({ agent, template }: { agent?: NavAgent; template?: AgentTemp
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="agent-name">Name</FieldLabel>
+                    <FieldLabel htmlFor="agent-name">名称</FieldLabel>
                     <Input
                       {...field}
                       id="agent-name"
@@ -170,11 +170,11 @@ function AgentForm({ agent, template }: { agent?: NavAgent; template?: AgentTemp
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="agent-role">Role</FieldLabel>
+                    <FieldLabel htmlFor="agent-role">角色</FieldLabel>
                     <Input
                       {...field}
                       id="agent-role"
-                      placeholder="Research analyst"
+                      placeholder="研究员"
                       autoComplete="off"
                       aria-invalid={fieldState.invalid}
                     />
@@ -190,7 +190,7 @@ function AgentForm({ agent, template }: { agent?: NavAgent; template?: AgentTemp
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="agent-model">Model</FieldLabel>
+                <FieldLabel htmlFor="agent-model">模型</FieldLabel>
                 <ModelPicker
                   id="agent-model"
                   value={field.value ?? ""}
@@ -201,7 +201,7 @@ function AgentForm({ agent, template }: { agent?: NavAgent; template?: AgentTemp
                   invalid={fieldState.invalid}
                 />
                 <FieldDescription>
-                  Workstation tasks need a model that supports tools and images.
+                  工作站任务需要支持工具和图像识别的模型。
                 </FieldDescription>
                 {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
               </Field>
@@ -214,7 +214,7 @@ function AgentForm({ agent, template }: { agent?: NavAgent; template?: AgentTemp
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <div className="flex items-baseline justify-between">
-                  <FieldLabel htmlFor="agent-instructions">Standing orders</FieldLabel>
+                  <FieldLabel htmlFor="agent-instructions">固定指令</FieldLabel>
                   <span className="font-mono text-[10.5px] text-faint tabular-nums">
                     {instructions.length}/6000
                   </span>
@@ -223,7 +223,7 @@ function AgentForm({ agent, template }: { agent?: NavAgent; template?: AgentTemp
                   {...field}
                   value={field.value ?? ""}
                   id="agent-instructions"
-                  placeholder="How should it work? What should it always or never do?"
+                  placeholder="它应该怎样工作？应该始终做什么、或绝不做什么？"
                   className="max-h-64 min-h-28 text-[13px] leading-relaxed"
                   aria-invalid={fieldState.invalid}
                 />
@@ -244,22 +244,22 @@ function AgentForm({ agent, template }: { agent?: NavAgent; template?: AgentTemp
                 className="text-destructive sm:mr-auto"
               >
                 <Trash2Icon data-icon="inline-start" />
-                Delete
+                删除
               </Button>
             }
-            title={`Delete ${agent.name}?`}
-            description="Its threads, its memory and its workstation (including every file on it) are deleted. This can't be undone."
-            action="Delete agent"
+            title={`删除 ${agent.name}？`}
+            description="它的会话、记忆和工作站（包括其中的所有文件）都会被删除，且无法撤销。"
+            action="删除 Agent"
             onConfirm={async () => {
               try {
                 await deleteAgent(agent.id)
-                toast.add({ type: "success", title: `${agent.name} deleted` })
+                toast.add({ type: "success", title: `${agent.name} 已删除` })
                 closeDialog()
                 router.push("/")
               } catch (error) {
                 toast.add({
                   type: "error",
-                  title: "Couldn't delete the agent",
+                  title: "无法删除 Agent",
                   description: error instanceof Error ? error.message : undefined,
                 })
               }
@@ -267,11 +267,11 @@ function AgentForm({ agent, template }: { agent?: NavAgent; template?: AgentTemp
           />
         )}
         <DialogClose render={<Button type="button" variant="outline" />}>
-          Cancel
+          取消
         </DialogClose>
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting && <Spinner data-icon="inline-start" />}
-          {agent ? "Save" : "Create agent"}
+          {agent ? "保存" : "创建 Agent"}
         </Button>
       </DialogFooter>
     </form>

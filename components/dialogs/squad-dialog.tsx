@@ -42,18 +42,18 @@ function SquadForm({ squad }: { squad?: NavSquad }) {
     try {
       if (squad) {
         await updateSquad(squad.id, values)
-        toast.add({ type: "success", title: `${values.name} updated` })
+        toast.add({ type: "success", title: `${values.name} 已更新` })
         closeDialog()
       } else {
         const { squad: created, threadId } = await createSquad(values)
-        toast.add({ type: "success", title: `${created.name} assembled` })
+        toast.add({ type: "success", title: `${created.name} 已组建` })
         closeDialog()
         router.push(`/s/${created.id}/${threadId}`)
       }
     } catch (error) {
       toast.add({
         type: "error",
-        title: squad ? "Couldn't save the squad" : "Couldn't create the squad",
+        title: squad ? "无法保存 Squad" : "无法创建 Squad",
         description: error instanceof Error ? error.message : undefined,
       })
     }
@@ -67,14 +67,13 @@ function SquadForm({ squad }: { squad?: NavSquad }) {
     <form onSubmit={onSubmit} className="flex min-h-0 flex-col">
       <DialogHeader className="gap-1 border-b px-5 pt-5 pb-4">
         <span className="label-mono">
-          {squad ? "// configure squad" : "// new squad"}
+          {squad ? "// 配置 Squad" : "// 新建 Squad"}
         </span>
         <DialogTitle className="text-lg font-semibold tracking-tight">
-          {squad ? squad.name : "Assemble a squad"}
+          {squad ? squad.name : "组建一个 Squad"}
         </DialogTitle>
         <DialogDescription>
-          Talk to several agents in one thread. Each keeps its own workstation and memory,
-          and can delegate to a squadmate whose role fits better.
+          在同一个会话里与多个 Agent 对话。每个都保留自己的工作站和记忆，并能把任务转交给角色更合适的队友。
         </DialogDescription>
       </DialogHeader>
 
@@ -90,11 +89,11 @@ function SquadForm({ squad }: { squad?: NavSquad }) {
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid} className="flex-1">
-                  <FieldLabel htmlFor="squad-name">Name</FieldLabel>
+                  <FieldLabel htmlFor="squad-name">名称</FieldLabel>
                   <Input
                     {...field}
                     id="squad-name"
-                    placeholder="Launch crew"
+                    placeholder="启动小组"
                     autoComplete="off"
                     aria-invalid={fieldState.invalid}
                   />
@@ -110,21 +109,21 @@ function SquadForm({ squad }: { squad?: NavSquad }) {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <div className="flex items-baseline justify-between">
-                  <FieldLabel>Members</FieldLabel>
+                  <FieldLabel>成员</FieldLabel>
                   <span className="font-mono text-[10.5px] text-faint">
-                    {field.value.length} selected · order = who answers first
+                    已选 {field.value.length} 个 · 顺序 = 谁先回答
                   </span>
                 </div>
                 {nav.agents.length < 2 ? (
                   <div className="flex items-center justify-between gap-3 rounded-md border border-dashed px-3 py-3 text-[13px] text-muted-foreground">
-                    You need at least two agents.
+                    你需要至少两个 Agent。
                     <Button
                       type="button"
                       size="sm"
                       variant="outline"
                       onClick={() => openAgentDialog()}
                     >
-                      New agent
+                      新建 Agent
                     </Button>
                   </div>
                 ) : (
@@ -183,26 +182,26 @@ function SquadForm({ squad }: { squad?: NavSquad }) {
                 className="text-destructive sm:mr-auto"
               >
                 <Trash2Icon data-icon="inline-start" />
-                Disband
+                解散
               </Button>
             }
-            title={`Disband ${squad.name}?`}
-            description="The squad and its threads are deleted. Its agents, their memory and workstations stay."
-            action="Disband squad"
+            title={`解散 ${squad.name}？`}
+            description="该 Squad 及其会话将被删除。它的 Agent、记忆和工作站会保留。"
+            action="解散 Squad"
             onConfirm={async () => {
               await deleteSquad(squad.id)
-              toast.add({ type: "success", title: `${squad.name} disbanded` })
+              toast.add({ type: "success", title: `${squad.name} 已解散` })
               closeDialog()
               router.push("/")
             }}
           />
         )}
         <DialogClose render={<Button type="button" variant="outline" />}>
-          Cancel
+          取消
         </DialogClose>
         <Button type="submit" disabled={isSubmitting || nav.agents.length < 2}>
           {isSubmitting && <Spinner data-icon="inline-start" />}
-          {squad ? "Save" : "Create squad"}
+          {squad ? "保存" : "创建 Squad"}
         </Button>
       </DialogFooter>
     </form>
