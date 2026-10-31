@@ -65,7 +65,7 @@ export function MemoryPanel({
           <input
             value={draft}
             onChange={(event) => setDraft(event.target.value)}
-            placeholder="Add a note…"
+            placeholder="添加一条备注…"
             className="h-7 min-w-0 flex-1 rounded-md border border-input bg-transparent px-2 text-[12.5px] outline-none placeholder:text-faint focus-visible:border-ring dark:bg-input/30"
           />
           <Button
@@ -73,7 +73,7 @@ export function MemoryPanel({
             size="icon-sm"
             variant="outline"
             disabled={!draft.trim() || saving}
-            aria-label="Add note"
+            aria-label="添加备注"
           >
             {saving ? <Spinner /> : <PlusIcon />}
           </Button>
@@ -87,9 +87,9 @@ export function MemoryPanel({
           </div>
         ) : notes.length === 0 ? (
           <div className="flex flex-col items-center gap-1 p-8 text-center">
-            <span className="font-mono text-[11px] text-faint">{"// empty"}</span>
+            <span className="font-mono text-[11px] text-faint">{"// 空"}</span>
             <p className="text-[12.5px] text-muted-foreground">
-              Nothing remembered yet. Tell the agent something worth keeping.
+              还没有任何记忆。告诉 Agent 一些值得记住的事。
             </p>
           </div>
         ) : (
@@ -107,7 +107,7 @@ export function MemoryPanel({
                 </div>
                 <button
                   type="button"
-                  aria-label="Forget"
+                  aria-label="遗忘"
                   onClick={async () => setNotes(await deleteMemory(agentId, note.id))}
                   className="grid size-6 shrink-0 place-items-center rounded-sm text-faint opacity-0 transition-opacity group-hover/note:opacity-100 hover:bg-accent hover:text-foreground focus-visible:opacity-100"
                 >
@@ -121,17 +121,17 @@ export function MemoryPanel({
 
       {notes && notes.length > 0 && (
         <div className="flex items-center border-t px-3 py-2">
-          <span className="font-mono text-[10.5px] text-faint">{notes.length} notes</span>
+          <span className="font-mono text-[10.5px] text-faint">{notes.length} 条备注</span>
           <Confirm
             trigger={
               <Button size="xs" variant="ghost" className="ml-auto text-muted-foreground">
                 <Trash2Icon data-icon="inline-start" />
-                Clear
+                清空
               </Button>
             }
-            title="Clear this agent's memory?"
-            description="Every note is deleted. The agent starts its next turn remembering nothing about you."
-            action="Clear memory"
+            title="清空这个 Agent 的记忆？"
+            description="所有备注都会被删除。Agent 的下一次会话将不记得关于你的任何事。"
+            action="清空记忆"
             onConfirm={async () => setNotes(await clearMemories(agentId))}
           />
         </div>

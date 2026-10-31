@@ -201,21 +201,21 @@ function RenameThreadDialog({
           }}
           className="flex flex-col gap-4"
         >
-          <DialogTitle>Rename thread</DialogTitle>
+          <DialogTitle>重命名会话</DialogTitle>
           <Input
             autoFocus
             value={value}
             maxLength={80}
             onChange={(event) => setValue(event.target.value)}
-            placeholder="Thread title"
+            placeholder="会话标题"
           />
           <div className="flex justify-end gap-2">
             <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
-              Cancel
+              取消
             </Button>
             <Button type="submit" disabled={saving || !value.trim()}>
               {saving && <Spinner data-icon="inline-start" />}
-              Save
+              保存
             </Button>
           </div>
         </form>
@@ -355,7 +355,7 @@ function ThreadHeader({
           >
             <MessageSquarePlusIcon />
           </TooltipTrigger>
-          <TooltipContent>New thread</TooltipContent>
+          <TooltipContent>新会话</TooltipContent>
         </Tooltip>
         <Tooltip>
           <TooltipTrigger
@@ -420,12 +420,12 @@ function ThreadHeader({
       <Confirm
         open={deleting}
         onOpenChange={setDeleting}
-        title="Delete this thread?"
-        description={`"${title ?? "New thread"}" and its messages are deleted. ${owner.name} keeps its memory${kind === "agent" ? " and workstation" : ""}.`}
-        action="Delete thread"
+        title="删除这个会话？"
+        description={`「${title ?? "新会话"}」及其消息将被删除。${owner.name} 会保留其记忆${kind === "agent" ? "和工作站" : ""}。`}
+        action="删除会话"
         onConfirm={async () => {
           await deleteThread(threadId)
-          toast.add({ type: "success", title: "Thread deleted" })
+          toast.add({ type: "success", title: "会话已删除" })
           router.push(base)
         }}
       />
@@ -454,14 +454,14 @@ function EmptyThread({
   const { status } = useWorkspace()
   const suggestions = [
     status.workstation &&
-      "Set up a Python project on your workstation, write a small script and run it.",
+      "在你的工作站上搭一个 Python 项目，写个小脚本并运行它。",
     status.web &&
-      "Research the three most important developments in your field this month, with sources.",
+      "研究本月你所在领域最重要的三个进展，并附上来源。",
     status.workstation &&
-      "Open a browser on your desktop, go to news.ycombinator.com and show me the screen.",
-    "Remember that I prefer short answers with code examples.",
+      "在你桌面上打开浏览器，访问 news.ycombinator.com，然后给我看屏幕。",
+    "记住我喜欢简短的回答并附上代码示例。",
     props.kind === "squad" &&
-      "Plan a small project and have each of you take the part that fits your role.",
+      "规划一个小项目，让每个人负责适合自己角色的部分。",
   ].filter((value): value is string => !!value)
 
   return (
@@ -691,7 +691,7 @@ export function ThreadView(props: ThreadViewProps) {
             <div className="flex items-start gap-2.5 rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2.5 text-[13px]">
               <TriangleAlertIcon className="mt-0.5 size-4 shrink-0 text-destructive" />
               <div className="flex min-w-0 flex-col gap-1">
-                <span className="font-medium text-destructive">The turn failed</span>
+                <span className="font-medium text-destructive">本次会话失败</span>
                 <span className="break-words text-muted-foreground">
                   {errorText(error)}
                 </span>

@@ -179,7 +179,7 @@ export function Screen({
               size="icon-xs"
               variant="ghost"
               aria-label="Expand the desktop"
-              title="Expand"
+              title="放大"
               onClick={() => setExpanded(true)}
             >
               <ExpandIcon />

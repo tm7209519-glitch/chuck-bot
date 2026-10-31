@@ -38,7 +38,7 @@ function Check({
           ok ? "text-ok" : optional ? "text-faint" : "text-betelgeuse"
         )}
       >
-        [{ok ? " ok " : optional ? " -- " : "warn"}]
+        [{ok ? " 好 " : optional ? " -- " : "警告"}]
       </span>
       <span className="w-24 shrink-0 text-foreground">{name}</span>
       <span className="min-w-0 truncate text-muted-foreground">{detail}</span>

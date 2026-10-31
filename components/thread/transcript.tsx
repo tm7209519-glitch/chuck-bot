@@ -73,7 +73,7 @@ function ReplyCost({ meta }: { meta: NonNullable<XirynMessage["metadata"]> }) {
   }
   if (typeof meta.cost === "number") {
     return (
-      <span title="What this reply cost, at the provider's price">
+      <span title="按提供商价格计算的本次回复成本">
         {formatUsd(meta.cost)}
       </span>
     )
@@ -81,7 +81,7 @@ function ReplyCost({ meta }: { meta: NonNullable<XirynMessage["metadata"]> }) {
   if (meta.cost === null || !meta.usage) return null
   const estimate = estimateCost(meta.model, meta.usage)
   if (estimate === null) return null
-  return <span title="Estimated at today's prices">≈ {formatUsd(estimate)}</span>
+  return <span title="按今日价格估算">≈ {formatUsd(estimate)}</span>
 }
 
 function formatTokens(n: number) {

@@ -268,12 +268,12 @@ export function Machine({
                 disabled={!!busy}
               >
                 <RotateCcwIcon data-icon="inline-start" />
-                Reset
+                重置
               </Button>
             }
-            title="Reset the workstation?"
-            description="The container and every file in its home folder are deleted. A fresh machine is created the next time the agent needs one. Memory is not affected."
-            action="Reset workstation"
+            title="重置工作站？"
+            description="容器及其主目录中的所有文件都会被删除。Agent 下次需要机器时会重新创建一台全新机器。记忆不受影响。"
+            action="重置工作站"
             onConfirm={() => run("reset", () => wipeWorkstation(agentId))}
           />
         )}
@@ -281,13 +281,12 @@ export function Machine({
       {internet && internet !== "full" && (
         <p className="rounded-md border border-warn/30 bg-warn/5 p-2.5 text-[12px] leading-relaxed text-muted-foreground">
           {internet === "offline"
-            ? "This machine can't reach the internet. Check that this computer is online and that Docker's network isn't blocked by a VPN or firewall."
-            : "Some sites are unreachable from this machine. A VPN, proxy or firewall on this computer may be filtering Docker's traffic."}
+            ? "这台机器无法联网。请检查这台电脑是否在线，以及 Docker 的网络是否被 VPN 或防火墙拦截。"
+            : "这台机器无法访问部分网站。这台电脑上的 VPN、代理或防火墙可能在过滤 Docker 的流量。"}
         </p>
       )}
       <p className="text-[11.5px] leading-relaxed text-faint">
-        Runs in Docker on this computer, browsing from your own connection. It stops
-        itself when idle and keeps its files unless auto-delete is on.
+        在这台电脑的 Docker 里运行，通过你自己的网络连接浏览。空闲时自动停止，除非开启自动删除，否则保留文件。
       </p>
     </div>
   )
