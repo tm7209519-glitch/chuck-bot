@@ -10,7 +10,7 @@ Electron 主进程 (desktop/main/index.js)
 ├── 单实例锁
 ├── BrowserWindow → 加载 http://127.0.0.1:6796
 ├── Tray 托盘图标（关闭窗口 = 最小化到托盘）
-└── 子进程启动 next start（内置 Node 运行时）
+└── 子进程启动 standalone server.js（内置 Node 运行时）
         ↓
    Xiryn (Next.js) 服务  ← 官方核心，原样复用
         ↓
@@ -65,7 +65,7 @@ npm run dist   # 生成 Windows NSIS 安装包（dist/ 目录）
 ### 真机验证记录（2026-10-31）
 
 - Electron 33.4.11 二进制已下载（`desktop/node_modules/electron/dist/electron.exe`，188MB）。
-- 源码模式已验证：窗口打开、拉起 `next start`、首页返回 200。
+- 源码模式已验证：窗口打开、拉起 standalone `server.js`、首页返回 200。
 - `electron-builder` 已生成 NSIS 安装包及 `latest.yml`、blockmap。
 - 打包目录版 `dist/win-unpacked/Chuck Bot.exe` 已实际启动，走 `app.isPackaged` 分支。
 - 内置官方 Node 22.22.2（ABI 127）成功启动 Next，与 better-sqlite3 的编译 ABI 一致。
@@ -86,11 +86,23 @@ node desktop/scripts/bundle-app.mjs --node "desktop/node-$nodeVersion-win-x64"
 npm --prefix desktop run dist
 ```
 
+### 体积优化（2026-10-31）
+
+Next 应用改用 `output: "standalone"`，`bundle-app.mjs` 只复制自包含的 `server.js` +
+最小依赖树，不再拷贝整个 `node_modules`（原先含 devDependencies 和构建工具）。
+
+- app-root：1.2GB → **60MB**；NSIS 安装包：475MB → **116MB**。
+- 运行时仍需 `process.cwd()` 相对路径的资源（`db/migrations`、`workstation`、
+  `public`、`messages`）由 bundle 脚本显式复制，并排除 standalone 误 trace 进来的
+  本地开发数据（`data/`）。
+- `better-sqlite3` native 二进制由 `serverExternalPackages` 保留，standalone 已验证
+  可正常建库迁移（13 张表）。
+
 ## 当前状态
 
 - [x] 单实例锁
 - [x] 窗口 + 托盘 + 最小化到托盘
-- [x] 子进程启动 `next start`（内置 Node）
+- [x] 子进程启动 standalone `server.js`（内置 Node，Next `output: "standalone"`）
 - [x] 健康检查（轮询 127.0.0.1:6796）
 - [x] 退出时清理自启的服务
 - [x] 外部链接走系统浏览器

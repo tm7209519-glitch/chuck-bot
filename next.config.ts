@@ -6,6 +6,10 @@ const withNextIntl = createNextIntlPlugin("./lib/i18n/request.ts")
 const nextConfig: NextConfig = {
   devIndicators: false,
   poweredByHeader: false,
+  // Build a self-contained server.js + minimal dependency tree instead of the
+  // full node_modules. The desktop shell bundles this, so it cuts the shipped
+  // size dramatically (no devDependencies, no build tooling).
+  output: "standalone",
   // Server action arguments can contain API keys; keep them out of the terminal
   logging: { serverFunctions: false },
   // Xiryn ships its own contributor guide; don't let `next dev` write one

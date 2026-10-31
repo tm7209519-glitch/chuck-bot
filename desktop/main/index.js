@@ -54,7 +54,9 @@ function nodeBin() {
 }
 
 function nextBin() {
-  return path.join(appRoot(), "node_modules", "next", "dist", "bin", "next")
+  // Standalone build: the entrypoint is a self-contained server.js at the app
+  // root, not the `next` CLI. The bundled Node runtime runs it directly.
+  return path.join(appRoot(), "server.js")
 }
 
 function userDataDir() {
@@ -119,10 +121,9 @@ function startService() {
   })
 
   const runtime = nodeBin()
-  const args = [nextBin(), "start", "--hostname", HOST, "--port", String(PORT)]
-  // A portable Node.exe can be launched by filename only while its directory
-  // is on PATH. Use an absolute executable path, and keep Electron's helper
-  // mode from turning the packaged runtime into a plain Node process.
+  // Standalone server.js honors HOSTNAME/PORT env vars and reads nothing from
+  // CLI args, unlike `next start`.
+  const args = [nextBin()]
   const childEnv = { ...process.env }
   delete childEnv.ELECTRON_RUN_AS_NODE
   delete childEnv.NODE_OPTIONS
@@ -134,6 +135,8 @@ function startService() {
       env: {
         ...childEnv,
         NODE_ENV: "production",
+        HOSTNAME: HOST,
+        PORT: String(PORT),
         XIRYN_DATA_DIR: dataDir,
         // The app's own update checker points at GitHub; the desktop shell
         // owns updates instead, so disable the in-app check.

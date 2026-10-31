@@ -63,29 +63,38 @@ function ensureBuild() {
 function main() {
   ensureBuild()
 
+  const standaloneDir = path.join(repoRoot, ".next", "standalone")
+  if (!fs.existsSync(path.join(standaloneDir, "server.js"))) {
+    throw new Error(
+      "No standalone build found. Set `output: 'standalone'` in next.config.ts and run `npm run build`."
+    )
+  }
+
   fs.rmSync(appRootDest, { recursive: true, force: true })
   fs.mkdirSync(appRootDest, { recursive: true })
 
-  console.log("[bundle] copying .next ...")
-  copyDir(path.join(repoRoot, ".next"), path.join(appRootDest, ".next"))
+  // The standalone build is a self-contained server.js + a minimal
+  // node_modules tree. It omits devDependencies and build tooling, so it is
+  // much smaller than the full node_modules. Exclude `data`: Next's trace
+  // sometimes pulls in the local dev database/vault key, which must never
+  // ship — runtime data lives in XIRYN_DATA_DIR (the user data folder).
+  console.log("[bundle] copying standalone build ...")
+  copyDir(standaloneDir, appRootDest, { exclude: ["data"] })
 
-  console.log("[bundle] copying node_modules ...")
-  // Copy the whole node_modules; the server needs real deps (better-sqlite3
-  // native binary included). Large but correct.
-  copyDir(path.join(repoRoot, "node_modules"), path.join(appRootDest, "node_modules"))
-
-  console.log("[bundle] copying server-relative assets ...")
-  const assets = ["workstation", "db", "public", "messages", "lib"]
-  for (const name of assets) {
+  // Next's standalone output omits files the server reads at runtime relative
+  // to cwd: database migrations, the workstation image source (Dockerfile +
+  // rootfs), static public assets and the i18n messages. Copy them into the
+  // app root, mirroring the repo layout the server expects.
+  console.log("[bundle] copying runtime assets ...")
+  for (const name of ["db", "workstation", "public", "messages"]) {
     const src = path.join(repoRoot, name)
     if (fs.existsSync(src)) {
       copyDir(src, path.join(appRootDest, name))
     }
   }
 
-  // The server also needs these at cwd: package.json (version), next config,
-  // and the i18n messages (already copied above under messages/).
-  for (const f of ["package.json", "next.config.ts", "tsconfig.json"]) {
+  // The i18n loader and a few other places read these from the app root.
+  for (const f of ["package.json"]) {
     const src = path.join(repoRoot, f)
     if (fs.existsSync(src)) {
       fs.copyFileSync(src, path.join(appRootDest, f))
