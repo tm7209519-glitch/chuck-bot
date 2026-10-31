@@ -61,14 +61,14 @@ export function CommandPalette() {
     <CommandDialog
       open={open}
       onOpenChange={(next) => (next ? openPalette() : closeDialog())}
-      title="Jump to"
-      description="Agents, squads, threads and actions"
+      title="跳转到"
+      description="Agents、Squads、会话和操作"
       className="sm:max-w-lg"
     >
       <Command>
-        <CommandInput placeholder="Type an agent, squad, thread or action…" />
+        <CommandInput placeholder="输入 Agent、Squad、会话或操作…" />
         <CommandList className="max-h-96">
-          <CommandEmpty>Nothing matches.</CommandEmpty>
+          <CommandEmpty>无匹配结果。</CommandEmpty>
           {nav.agents.length > 0 && (
             <CommandGroup heading="Agents">
               {nav.agents.map((agent) => (
@@ -113,7 +113,7 @@ export function CommandPalette() {
             </CommandGroup>
           )}
           {nav.threads.length > 0 && (
-            <CommandGroup heading="Threads">
+            <CommandGroup heading="会话">
               {nav.threads.slice(0, 20).map((thread) => (
                 <CommandItem
                   key={thread.id}
@@ -127,51 +127,51 @@ export function CommandPalette() {
                   }
                 >
                   <MessageSquareIcon className="text-muted-foreground" />
-                  <span className="truncate">{thread.title ?? "New thread"}</span>
+                  <span className="truncate">{thread.title ?? "新会话"}</span>
                 </CommandItem>
               ))}
             </CommandGroup>
           )}
-          <CommandGroup heading="Actions">
+          <CommandGroup heading="操作">
             <CommandItem value="new agent create" onSelect={() => openAgentDialog()}>
               <PlusIcon />
-              New agent
+              新建 Agent
             </CommandItem>
             <CommandItem
               value="new squad create group"
               onSelect={() => openSquadDialog()}
             >
               <UsersIcon />
-              New squad
+              新建 Squad
             </CommandItem>
             <CommandItem
               value="templates agents squads ready-made shopping travel jobs"
               onSelect={() => go("/templates")}
             >
               <LayoutGridIcon />
-              Templates
+              模板
             </CommandItem>
             <CommandItem
               value="routines schedule daily every morning automatic recurring cron"
               onSelect={() => go("/routines")}
             >
               <AlarmClockIcon />
-              Routines
+              例行任务
             </CommandItem>
             <CommandItem value="home overview" onSelect={() => go("/")}>
               <HomeIcon />
-              Overview
+              概览
             </CommandItem>
             <CommandItem value="usage tokens ledger" onSelect={() => go("/usage")}>
               <ActivityIcon />
-              Usage
+              用量
             </CommandItem>
             <CommandItem
               value="settings providers keys models"
               onSelect={() => go("/settings")}
             >
               <SettingsIcon />
-              Settings
+              设置
             </CommandItem>
             <CommandItem
               value="send feedback email developer"
@@ -181,7 +181,7 @@ export function CommandPalette() {
               }}
             >
               <MailIcon />
-              Send feedback
+              发送反馈
             </CommandItem>
             <CommandItem
               value="report a bug issue github"
@@ -191,7 +191,7 @@ export function CommandPalette() {
               }}
             >
               <BugIcon />
-              Report a bug on GitHub
+              在 GitHub 上报 Bug
             </CommandItem>
             <CommandItem
               value="toggle theme dark light"
@@ -201,7 +201,7 @@ export function CommandPalette() {
               }}
             >
               <MoonIcon />
-              Toggle theme
+              切换主题
               <CommandShortcut>
                 {resolvedTheme === "dark" ? "light" : "dark"}
               </CommandShortcut>

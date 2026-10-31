@@ -22,7 +22,7 @@ export function NewAgentCard() {
       <span className="grid size-8 place-items-center rounded-lg border bg-background transition-transform group-hover:scale-105">
         <PlusIcon className="size-4" />
       </span>
-      <span className="text-[13px] font-medium">New agent</span>
+      <span className="text-[13px] font-medium">新建 Agent</span>
     </button>
   )
 }
@@ -37,7 +37,7 @@ export function NewSquadButton({ disabled }: { disabled?: boolean }) {
       className="inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-[12px] text-muted-foreground transition-colors hover:border-input hover:text-foreground disabled:pointer-events-none disabled:opacity-40"
     >
       <UsersIcon className="size-3.5" />
-      New squad
+      新建 Squad
     </button>
   )
 }
@@ -69,7 +69,7 @@ export function TemplateGrid({ ids }: { ids?: string[] }) {
             {template.blurb}
           </p>
           <span className="mt-auto font-mono text-[11px] text-rigel opacity-70 transition-opacity group-hover:opacity-100">
-            deploy →
+            部署 →
           </span>
         </button>
       ))}
@@ -91,14 +91,14 @@ export function StarterTeamButton({ className }: { className?: string }) {
           const { href, name } = await createSquadFromTemplate("starter")
           toast.add({
             type: "success",
-            title: `${name} is ready`,
-            description: "Atlas, Vega, Rigel and Lyra are online.",
+            title: `${name} 已就绪`,
+            description: "Atlas、Vega、Rigel 和 Lyra 已上线。",
           })
           router.push(href)
         } catch (error) {
           toast.add({
             type: "error",
-            title: "Couldn't create the team",
+            title: "无法创建团队",
             description: error instanceof Error ? error.message : String(error),
           })
         } finally {
@@ -111,7 +111,7 @@ export function StarterTeamButton({ className }: { className?: string }) {
       ) : (
         <SparklesIcon data-icon="inline-start" />
       )}
-      Create a starter team
+      创建初始团队
     </Button>
   )
 }

@@ -4,13 +4,13 @@ import type { RoutineSchedule } from "@/db/schema"
 // Client-safe.
 
 export const WEEKDAYS = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
+  "周日",
+  "周一",
+  "周二",
+  "周三",
+  "周四",
+  "周五",
+  "周六",
 ]
 
 function at(day: Date, time: string) {
@@ -56,16 +56,16 @@ export function nextRun(schedule: RoutineSchedule, from = new Date()): Date | nu
 export function describeSchedule(schedule: RoutineSchedule) {
   switch (schedule.kind) {
     case "daily":
-      return `Every day at ${schedule.time}`
+      return `每天 ${schedule.time}`
     case "weekdays":
-      return `Weekdays at ${schedule.time}`
+      return `工作日 ${schedule.time}`
     case "weekly":
-      return `${WEEKDAYS[schedule.day]}s at ${schedule.time}`
+      return `每${WEEKDAYS[schedule.day]} ${schedule.time}`
     case "hourly":
-      return schedule.every === 1 ? "Every hour" : `Every ${schedule.every} hours`
+      return schedule.every === 1 ? "每小时" : `每 ${schedule.every} 小时`
     case "once": {
       const at = parseLocal(schedule.at)
-      return `Once, ${at.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" })} at ${schedule.at.slice(11)}`
+      return `一次，${at.toLocaleDateString("zh-CN", { weekday: "short", day: "numeric", month: "short" })} ${schedule.at.slice(11)}`
     }
   }
 }

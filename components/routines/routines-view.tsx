@@ -138,14 +138,14 @@ function RoutineDialog({
               )
               toast.add({
                 type: "success",
-                title: routine ? "Routine saved" : "Routine created",
+                title: routine ? "例行任务已保存" : "例行任务已创建",
               })
               onOpenChange(false)
               router.refresh()
             } catch (error) {
               toast.add({
                 type: "error",
-                title: "Couldn't save",
+                title: "无法保存",
                 description: reason(error),
               })
             } finally {
@@ -154,32 +154,31 @@ function RoutineDialog({
           }}
         >
           <div className="flex flex-col gap-1">
-            <DialogTitle>{routine ? "Edit routine" : "New routine"}</DialogTitle>
+            <DialogTitle>{routine ? "编辑例行任务" : "新建例行任务"}</DialogTitle>
             <p className="text-[12.5px] text-muted-foreground">
-              An agent does this on its own, on schedule, while Xiryn is running. Results
-              land in the routine&apos;s thread, and on Telegram if it&apos;s connected.
+              Agent 会在 Chuck Bot 运行时按计划自动完成这项任务。结果会发布到该例行任务的会话里，如果连接了 Telegram 也会推送到手机。
             </p>
           </div>
 
           <label className="flex flex-col gap-1.5">
-            <span className="label-mono">Name</span>
+            <span className="label-mono">名称</span>
             <Input
               value={draft.name}
               maxLength={60}
               onChange={(event) => set("name", event.target.value)}
-              placeholder="Morning brief"
+              placeholder="早间简报"
             />
           </label>
 
           <label className="flex flex-col gap-1.5">
-            <span className="label-mono">Who does it</span>
+            <span className="label-mono">由谁执行</span>
             <select
               value={draft.owner}
               onChange={(event) => set("owner", event.target.value)}
               className={selectClass}
             >
               <option value="" disabled>
-                Pick an agent or a squad
+                选择一个 Agent 或 Squad
               </option>
               {nav.agents.length > 0 && (
                 <optgroup label="Agents">
@@ -203,34 +202,34 @@ function RoutineDialog({
           </label>
 
           <label className="flex flex-col gap-1.5">
-            <span className="label-mono">What to do each time</span>
+            <span className="label-mono">每次要做什么</span>
             <Textarea
               value={draft.prompt}
               maxLength={4000}
               onChange={(event) => set("prompt", event.target.value)}
-              placeholder="Check my favourite blogs for new posts and summarise them."
+              placeholder="检查我最喜欢的博客是否有新文章，并做总结。"
               className="max-h-48 min-h-24 text-[13px]"
             />
           </label>
 
           <div className="grid gap-3 sm:grid-cols-[1fr_1fr]">
             <label className="flex flex-col gap-1.5">
-              <span className="label-mono">When</span>
+              <span className="label-mono">时间</span>
               <select
                 value={draft.kind}
                 onChange={(event) => set("kind", event.target.value as Draft["kind"])}
                 className={selectClass}
               >
-                <option value="daily">Every day</option>
-                <option value="weekdays">Weekdays</option>
-                <option value="weekly">Once a week</option>
-                <option value="hourly">Every few hours</option>
-                <option value="once">Just once</option>
+                <option value="daily">每天</option>
+                <option value="weekdays">工作日</option>
+                <option value="weekly">每周一次</option>
+                <option value="hourly">每隔几小时</option>
+                <option value="once">仅一次</option>
               </select>
             </label>
             {draft.kind === "once" ? (
               <label className="flex flex-col gap-1.5">
-                <span className="label-mono">On</span>
+                <span className="label-mono">日期</span>
                 <input
                   type="datetime-local"
                   value={draft.at}
@@ -240,7 +239,7 @@ function RoutineDialog({
               </label>
             ) : draft.kind === "hourly" ? (
               <label className="flex flex-col gap-1.5">
-                <span className="label-mono">Every</span>
+                <span className="label-mono">间隔</span>
                 <select
                   value={draft.every}
                   onChange={(event) => set("every", Number(event.target.value))}
@@ -248,7 +247,7 @@ function RoutineDialog({
                 >
                   {[1, 2, 3, 4, 6, 8, 12, 24].map((hours) => (
                     <option key={hours} value={hours}>
-                      {hours === 1 ? "hour" : `${hours} hours`}
+                      {hours === 1 ? "1 小时" : `${hours} 小时`}
                     </option>
                   ))}
                 </select>
@@ -257,7 +256,7 @@ function RoutineDialog({
               <div className="flex gap-2">
                 {draft.kind === "weekly" && (
                   <label className="flex flex-1 flex-col gap-1.5">
-                    <span className="label-mono">Day</span>
+                    <span className="label-mono">星期</span>
                     <select
                       value={draft.day}
                       onChange={(event) => set("day", Number(event.target.value))}
@@ -272,7 +271,7 @@ function RoutineDialog({
                   </label>
                 )}
                 <label className="flex flex-1 flex-col gap-1.5">
-                  <span className="label-mono">At</span>
+                  <span className="label-mono">时间点</span>
                   <input
                     type="time"
                     value={draft.time}
@@ -284,12 +283,12 @@ function RoutineDialog({
             )}
           </div>
           <p className="-mt-1 font-mono text-[11px] text-muted-foreground">
-            {describeSchedule(scheduleOf(draft))} · this computer&apos;s time
+            {describeSchedule(scheduleOf(draft))} · 本机时间
           </p>
 
           <div className="flex justify-end gap-2">
             <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
-              Cancel
+              取消
             </Button>
             <Button
               type="submit"
@@ -298,7 +297,7 @@ function RoutineDialog({
               }
             >
               {saving && <Spinner data-icon="inline-start" />}
-              {routine ? "Save" : "Create routine"}
+              {routine ? "保存" : "创建例行任务"}
             </Button>
           </div>
         </form>
@@ -379,7 +378,7 @@ function formatDuration(ms: number) {
 function RunCost({ cost }: { cost: Run["cost"] }) {
   if (!cost) return null
   if (cost.free) return <span className="text-ok">free</span>
-  if (cost.usd === null) return <span title="This model's price isn't known">—</span>
+  if (cost.usd === null) return <span title="该模型价格未知">—</span>
   return <span>{formatUsd(cost.usd)}</span>
 }
 
@@ -438,7 +437,7 @@ function RoutineCard({ routine }: { routine: RoutineView }) {
     const result = await runRoutineNow(routine.id)
     setBusy(null)
     if (!result.ok) {
-      toast.add({ type: "error", title: "Couldn't run it", description: result.error })
+      toast.add({ type: "error", title: "无法运行", description: result.error })
       return
     }
     toast.add({ type: "success", title: `${routine.name} is running` })
@@ -484,7 +483,7 @@ function RoutineCard({ routine }: { routine: RoutineView }) {
               } catch (error) {
                 toast.add({
                   type: "error",
-                  title: "Couldn't change it",
+                  title: "无法修改",
                   description: reason(error),
                 })
               } finally {
@@ -515,11 +514,11 @@ function RoutineCard({ routine }: { routine: RoutineView }) {
           ) : (
             <PlayIcon data-icon="inline-start" />
           )}
-          Run now
+          立即运行
         </Button>
         <Button size="sm" variant="ghost" onClick={() => setEditing(true)}>
           <PencilIcon data-icon="inline-start" />
-          Edit
+          编辑
         </Button>
         {routine.href && (
           <Button
@@ -529,7 +528,7 @@ function RoutineCard({ routine }: { routine: RoutineView }) {
             nativeButton={false}
           >
             <ArrowUpRightIcon data-icon="inline-start" />
-            Results
+            结果
           </Button>
         )}
         {entries > 0 && (
@@ -540,7 +539,7 @@ function RoutineCard({ routine }: { routine: RoutineView }) {
             onClick={() => setShowHistory((shown) => !shown)}
           >
             <HistoryIcon data-icon="inline-start" />
-            History
+            历史
             <span className="font-mono text-[11px] text-muted-foreground">{entries}</span>
           </Button>
         )}
@@ -551,7 +550,7 @@ function RoutineCard({ routine }: { routine: RoutineView }) {
           onClick={() => setDeleting(true)}
         >
           <Trash2Icon data-icon="inline-start" />
-          Delete
+          删除
         </Button>
       </div>
       {showHistory && <History routine={routine} />}
@@ -566,9 +565,9 @@ function RoutineCard({ routine }: { routine: RoutineView }) {
       <Confirm
         open={deleting}
         onOpenChange={setDeleting}
-        title={`Delete "${routine.name}"?`}
-        description="It stops running. Its thread and everything the agent wrote there are kept."
-        action="Delete routine"
+        title={`删除「${routine.name}」？`}
+        description="它会停止运行。它的会话以及 Agent 在其中写下的所有内容都会保留。"
+        action="删除例行任务"
         onConfirm={async () => {
           await deleteRoutine(routine.id)
           router.refresh()
@@ -618,15 +617,15 @@ export function RoutinesView({ routines }: { routines: RoutineView[] }) {
           disabled={nav.agents.length === 0}
         >
           <PlusIcon data-icon="inline-start" />
-          New routine
+          新建例行任务
         </Button>
         {nav.agents.length === 0 && (
           <span className="text-[12.5px] text-muted-foreground">
-            Create an agent first —{" "}
+            先创建一个 Agent——{" "}
             <Link href="/templates" className="underline underline-offset-2">
-              templates
+              模板
             </Link>{" "}
-            make it quick.
+            可以让你更快开始。
           </span>
         )}
       </div>
@@ -640,7 +639,7 @@ export function RoutinesView({ routines }: { routines: RoutineView[] }) {
       )}
 
       <section className="flex flex-col gap-3">
-        <span className="label-mono">{"// ideas"}</span>
+        <span className="label-mono">{"// 灵感"}</span>
         <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {routineTemplates.map((template) => {
             const preset = getAgentTemplate(template.agent)
