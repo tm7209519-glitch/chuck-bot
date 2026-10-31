@@ -5,21 +5,9 @@ import { ArrowUpCircleIcon } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 import { Spinner } from "@/components/ui/spinner"
+import type { DesktopUpdateApi } from "@/lib/desktop"
 
 type UpdateStatus = "idle" | "checking" | "available" | "downloading" | "downloaded" | "error"
-type UpdateResult = { ok?: boolean; already?: boolean; version?: string | null; message?: string }
-declare global {
-  interface Window {
-    chuckBot?: { version?: string; update?: DesktopUpdateApi }
-  }
-}
-
-type DesktopUpdateApi = {
-  check: () => Promise<UpdateResult>
-  download: () => Promise<UpdateResult>
-  install: () => Promise<void>
-  on: (channel: string, listener: (payload: { version?: string; percent?: number; message?: string }) => void) => () => void
-}
 
 export function DesktopUpdater({ version }: { version: string }) {
   const t = useTranslations("sidebar")

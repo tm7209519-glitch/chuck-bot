@@ -80,3 +80,12 @@ jobs:
           WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
           WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
         run: npm run release
+
+      # Smoke test the packaged app: boot the bundled standalone service and
+      # probe the key routes. Fails the build if the bundle is broken, so a bad
+      # installer is never published.
+      - name: Smoke test packaged app
+        working-directory: desktop
+        shell: bash
+        run: |
+          node scripts/smoke-test.mjs "dist/win-unpacked" --port 6799

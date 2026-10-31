@@ -10,6 +10,7 @@ import {
   StarterTeamButton,
   TemplateGrid,
 } from "@/components/home/actions"
+import { FirstRunWizard } from "@/components/workspace/first-run-wizard"
 import { agentTemplates } from "@/lib/templates"
 import { PRODUCT_SLUG } from "@/lib/project"
 import { getNavigation, getSystemStatus } from "@/queries/workspace"
@@ -95,6 +96,8 @@ export default async function Home() {
             {t("noAgentsSubtitle")}
           </p>
         </header>
+
+        {!hasAgents && <FirstRunWizard />}
 
         <section className="overflow-hidden rounded-xl border bg-surface/70 shadow-[0_1px_0_0_var(--hairline)] backdrop-blur-sm">
           <div className="flex items-center gap-2 border-b px-4 py-2">

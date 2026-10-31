@@ -83,14 +83,22 @@ function main() {
 
   // Next's standalone output omits files the server reads at runtime relative
   // to cwd: database migrations, the workstation image source (Dockerfile +
-  // rootfs), static public assets and the i18n messages. Copy them into the
-  // app root, mirroring the repo layout the server expects.
+  // rootfs), static public assets, the i18n messages and — critically — the
+  // `.next/static` client bundle (Next emits it next to the standalone dir,
+  // not inside it). Without `.next/static` the client JS/CSS 404s and the app
+  // never hydrates. Copy them all into the app root, mirroring the layout the
+  // standalone server expects.
   console.log("[bundle] copying runtime assets ...")
   for (const name of ["db", "workstation", "public", "messages"]) {
     const src = path.join(repoRoot, name)
     if (fs.existsSync(src)) {
       copyDir(src, path.join(appRootDest, name))
     }
+  }
+  // Client bundle: `.next/static` → app-root/.next/static.
+  const staticSrc = path.join(repoRoot, ".next", "static")
+  if (fs.existsSync(staticSrc)) {
+    copyDir(staticSrc, path.join(appRootDest, ".next", "static"))
   }
 
   // The i18n loader and a few other places read these from the app root.

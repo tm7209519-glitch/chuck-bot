@@ -18,7 +18,6 @@ const fs = require("node:fs")
 const http = require("node:http")
 const { registerIpc } = require("./ipc")
 const { registerUpdaterIpc } = require("./updater")
-const { probeDocker, launchDesktop } = require("./docker")
 
 const APP_URL = process.env.CHUCK_BOT_URL || "http://127.0.0.1:6796"
 const PORT = Number(process.env.CHUCK_BOT_PORT || 6796)
@@ -184,6 +183,7 @@ function createWindow() {
     title: "Chuck Bot",
     webPreferences: {
       preload: path.join(__dirname, "..", "preload", "index.js"),
+      additionalArguments: [`--chuck-bot-version=${app.getVersion()}`],
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: true,
@@ -265,24 +265,9 @@ app.whenReady().then(async () => {
     return
   }
 
-  // First-run env guidance: if Docker is missing, offer to download it. The
-  // service itself will build the workstation image once Docker is ready.
-  const docker = probeDocker()
-  if (docker.state === "missing") {
-    const { response } = await dialog.showMessageBox(mainWindow, {
-      type: "info",
-      title: "Chuck Bot 首次运行",
-      message: "需要 Docker 才能运行 Agent 的小电脑",
-      detail:
-        "每个 Agent 都会在一个独立的 Linux 桌面（Docker 容器）里工作。检测到本机尚未安装 Docker。\n\n安装 Docker Desktop 后，Agent 的小电脑镜像会自动构建。",
-      buttons: ["前往下载 Docker", "稍后再说"],
-      defaultId: 0,
-      cancelId: 1,
-    })
-    if (response === 0) {
-      shell.openExternal("https://www.docker.com/products/docker-desktop/")
-    }
-  }
+  // First-run Docker guidance now lives in the renderer (the in-app wizard,
+  // which uses the env:docker IPC bridge). Keeping it there avoids a duplicate
+  // prompt and gives a friendlier, dismissible walkthrough.
 })
 
 app.on("before-quit", () => {

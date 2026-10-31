@@ -1,6 +1,10 @@
 // Chuck Bot preload — exposes a minimal, sandbox-safe bridge to the renderer.
 const { contextBridge, ipcRenderer } = require("electron")
-const { version } = require("../package.json")
+
+// The app version is injected by the main process via --chuck-bot-version
+// (additionalArguments), because a sandboxed preload cannot require package.json.
+const versionArg = process.argv.find((arg) => arg.startsWith("--chuck-bot-version="))
+const version = versionArg ? versionArg.slice("--chuck-bot-version=".length) : "0.0.0"
 
 contextBridge.exposeInMainWorld("chuckBot", {
   version,
