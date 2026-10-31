@@ -115,11 +115,11 @@ function SecretInput({
         spellCheck={false}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        placeholder={
-          setting.value
-            ? `${setting.value}  (leave empty to keep)`
-            : (placeholder ?? "Paste key")
-        }
+          placeholder={
+            setting.value
+              ? `${setting.value}（留空则保持原样）`
+              : (placeholder ?? "粘贴密钥")
+          }
         className="h-8 w-full rounded-lg border border-input bg-transparent pr-2.5 pl-8 font-mono text-[12px] outline-none placeholder:text-faint focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/40 dark:bg-input/30"
       />
     </div>
@@ -164,7 +164,7 @@ function useSave() {
     } catch (error) {
       toast.add({
         type: "error",
-        title: "Couldn't save",
+        title: "无法保存",
         description: error instanceof Error ? error.message : String(error),
       })
       return false
@@ -218,7 +218,7 @@ function ProviderRow({ provider }: { provider: SettingsData["providers"][number]
     const response = await fetchProviderModels(provider.id)
     setResult(
       response.ok
-        ? { ok: true, detail: `${response.models.length} models available` }
+        ? { ok: true, detail: `${response.models.length} 个模型可用` }
         : { ok: false, error: response.error }
     )
     setTesting(false)
@@ -233,7 +233,7 @@ function ProviderRow({ provider }: { provider: SettingsData["providers"][number]
         <span className="text-[13.5px] font-medium">{provider.name}</span>
         {provider.local && (
           <span className="rounded-sm border px-1.5 py-px font-mono text-[10px] text-muted-foreground">
-            local
+            本地
           </span>
         )}
         <span className="ml-auto flex items-center gap-2">
@@ -266,7 +266,7 @@ function ProviderRow({ provider }: { provider: SettingsData["providers"][number]
           <label className="flex flex-col gap-1.5">
             <span className="flex items-center justify-between">
               <span className="label-mono">
-                Endpoint{provider.requiresBaseUrl || provider.local ? "" : " (optional)"}
+                端点{provider.requiresBaseUrl || provider.local ? "" : "（可选）"}
               </span>
               <span className="font-mono text-[10px] text-faint">
                 {provider.baseUrlEnv}
@@ -275,11 +275,11 @@ function ProviderRow({ provider }: { provider: SettingsData["providers"][number]
             <TextInput
               value={baseUrl}
               onChange={setBaseUrl}
-              placeholder={
-                provider.baseUrl.source === "env"
-                  ? `${provider.baseUrl.value} (from .env)`
-                  : provider.defaultBaseUrl || "https://your-endpoint/v1"
-              }
+                placeholder={
+                  provider.baseUrl.source === "env"
+                    ? `${provider.baseUrl.value}（来自 .env）`
+                    : provider.defaultBaseUrl || "https://your-endpoint/v1"
+                }
             />
           </label>
           <div className="flex flex-wrap items-center gap-2">
@@ -296,11 +296,11 @@ function ProviderRow({ provider }: { provider: SettingsData["providers"][number]
                   [`provider.${provider.id}.baseUrl`]: baseUrl.trim() || null,
                 }
                 if (key.trim()) values[`provider.${provider.id}.apiKey`] = key.trim()
-                if (await save(values, `${provider.name} saved`)) setKey("")
+                if (await save(values, `${provider.name} 已保存`)) setKey("")
               }}
             >
               {pending && <Spinner data-icon="inline-start" />}
-              Save
+              保存
             </Button>
             <Button
               size="sm"
@@ -313,7 +313,7 @@ function ProviderRow({ provider }: { provider: SettingsData["providers"][number]
               ) : (
                 <PlugIcon data-icon="inline-start" />
               )}
-              Test connection
+              测试连接
             </Button>
             {provider.apiKey.source === "local" && (
               <Button
@@ -321,11 +321,11 @@ function ProviderRow({ provider }: { provider: SettingsData["providers"][number]
                 variant="ghost"
                 className="text-muted-foreground"
                 onClick={() =>
-                  save({ [`provider.${provider.id}.apiKey`]: null }, "Saved key removed")
+                  save({ [`provider.${provider.id}.apiKey`]: null }, "已移除保存的密钥")
                 }
               >
                 <RotateCcwIcon data-icon="inline-start" />
-                Forget saved key
+                清除已保存的密钥
               </Button>
             )}
             {provider.keysUrl && (
@@ -335,7 +335,7 @@ function ProviderRow({ provider }: { provider: SettingsData["providers"][number]
                 rel="noreferrer"
                 className="ml-auto inline-flex items-center gap-1 font-mono text-[11px] text-muted-foreground hover:text-foreground"
               >
-                get a key <ExternalLinkIcon className="size-3" />
+                获取密钥 <ExternalLinkIcon className="size-3" />
               </a>
             )}
           </div>
@@ -458,13 +458,13 @@ function IntegrationCard({
                 payload[field.key] = value || null
               }
             }
-            if (await save(payload, `${name} saved`)) {
+            if (await save(payload, `${name} 已保存`)) {
               setValues((current) => ({ ...current, [keyField.key]: "" }))
             }
           }}
         >
           {pending && <Spinner data-icon="inline-start" />}
-          Save
+          保存
         </Button>
         <Button
           size="sm"
@@ -481,17 +481,17 @@ function IntegrationCard({
           ) : (
             <PlugIcon data-icon="inline-start" />
           )}
-          Test connection
+          测试连接
         </Button>
         {keyField.setting.source === "local" && (
           <Button
             size="sm"
             variant="ghost"
             className="text-muted-foreground"
-            onClick={() => save({ [keyField.key]: null }, "Saved key removed")}
+            onClick={() => save({ [keyField.key]: null }, "已移除保存的密钥")}
           >
             <RotateCcwIcon data-icon="inline-start" />
-            Forget saved key
+            清除已保存的密钥
           </Button>
         )}
       </div>
@@ -607,11 +607,9 @@ function WorkstationCard({ data }: { data: SettingsData }) {
           )}
         />
         <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-          <span className="text-[14px] font-semibold">Workstations</span>
+          <span className="text-[14px] font-semibold">工作站</span>
           <p className="text-[12.5px] leading-relaxed text-muted-foreground">
-            One Docker container per agent, on this computer: a Linux desktop with a
-            browser, a shell and a home folder that persists. It browses from your own
-            connection and never touches your files.
+            每个 Agent 一个 Docker 容器，运行在这台电脑上：一个带浏览器、终端和持久化主目录的 Linux 桌面。它通过你自己的网络连接浏览，绝不触碰你的文件。
           </p>
         </div>
         <a
@@ -629,12 +627,12 @@ function WorkstationCard({ data }: { data: SettingsData }) {
           <ContainerIcon className="size-3.5 text-muted-foreground" />
           <span className="font-mono text-[12px]">
             {!engine
-              ? "checking docker…"
+              ? "检查 Docker…"
               : engine.state === "ready"
-                ? `docker ${engine.version} · ${engine.cpus} cpu · ${gib(engine.memoryBytes)}`
+                ? `docker ${engine.version} · ${engine.cpus} 核 · ${gib(engine.memoryBytes)}`
                 : engine.state === "stopped"
-                  ? "docker isn't running"
-                  : "docker isn't installed"}
+                  ? "Docker 未运行"
+                  : "未安装 Docker"}
           </span>
           {engine?.state === "stopped" && engine.canStart && (
             <Button
@@ -656,7 +654,7 @@ function WorkstationCard({ data }: { data: SettingsData }) {
               ) : (
                 <PlayIcon data-icon="inline-start" />
               )}
-              Start Docker
+              启动 Docker
             </Button>
           )}
         </div>
@@ -664,11 +662,11 @@ function WorkstationCard({ data }: { data: SettingsData }) {
         {engine?.state === "missing" && (
           <div className="flex flex-col gap-2 px-3 py-3 text-[12.5px] leading-relaxed text-muted-foreground">
             <p>
-              Install Docker, then restart Xiryn. In a terminal in the Xiryn folder,{" "}
+              先安装 Docker，再重启 Chuck Bot。在 Chuck Bot 所在目录的终端里运行{" "}
               <code className="rounded-sm bg-muted px-1 font-mono text-[11.5px]">
                 npm run setup
               </code>{" "}
-              does it for you — or run:
+              会自动完成——或者手动执行：
             </p>
             <code className="rounded-md border bg-background/60 px-2.5 py-1.5 font-mono text-[11.5px] text-foreground">
               {install.command}
@@ -679,7 +677,7 @@ function WorkstationCard({ data }: { data: SettingsData }) {
               rel="noreferrer"
               className="inline-flex w-fit items-center gap-1 font-mono text-[11px] hover:text-foreground"
             >
-              installation guide <ExternalLinkIcon className="size-3" />
+              安装指南 <ExternalLinkIcon className="size-3" />
             </a>
           </div>
         )}
@@ -696,12 +694,12 @@ function WorkstationCard({ data }: { data: SettingsData }) {
               <HammerIcon className="size-3.5 text-muted-foreground" />
               <span className="min-w-0 truncate font-mono text-[12px]">
                 {image.state === "ready"
-                  ? `image ready · ${image.tag.split(":")[1]} · ${gib(image.sizeBytes)}`
+                  ? `镜像就绪 · ${image.tag.split(":")[1]} · ${gib(image.sizeBytes)}`
                   : image.state === "building"
-                    ? `building image · ${elapsed(image.startedAt)}`
+                    ? `正在构建镜像 · ${elapsed(image.startedAt)}`
                     : image.state === "failed"
-                      ? "image build failed"
-                      : "image not built yet"}
+                      ? "镜像构建失败"
+                      : "尚未构建镜像"}
               </span>
               {(image.state === "absent" || image.state === "failed") && (
                 <Button
@@ -716,20 +714,19 @@ function WorkstationCard({ data }: { data: SettingsData }) {
                   }}
                 >
                   <HammerIcon data-icon="inline-start" />
-                  {image.state === "failed" ? "Try again" : "Build now"}
+                  {image.state === "failed" ? "重试" : "立即构建"}
                 </Button>
               )}
               {image.state === "building" && <Spinner className="ml-auto size-3.5" />}
             </div>
             {image.state === "absent" && (
               <p className="text-[12px] text-muted-foreground">
-                Built once on this computer (a few minutes), or automatically the first
-                time an agent needs its machine.
+                在这台电脑上构建一次（需要几分钟），或在 Agent 首次需要它的机器时自动构建。
               </p>
             )}
             {image.state === "building" && image.step && (
               <p className="truncate font-mono text-[11px] text-rigel">
-                step {image.step}
+                步骤 {image.step}
               </p>
             )}
             {image.state === "failed" && (
@@ -747,14 +744,14 @@ function WorkstationCard({ data }: { data: SettingsData }) {
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
-        {field("cpus", "CPUs per agent", settings.cpus, "2")}
-        {field("memory", "Memory per agent (GB)", settings.memory, "4")}
-        {field("autoStop", "Auto-stop when idle (minutes)", settings.autoStop, "15")}
+        {field("cpus", "每个 Agent 的 CPU 数", settings.cpus, "2")}
+        {field("memory", "每个 Agent 的内存 (GB)", settings.memory, "4")}
+        {field("autoStop", "空闲自动停止（分钟）", settings.autoStop, "15")}
         {field(
           "autoDelete",
-          "Auto-delete after stop (minutes)",
+          "停止后自动删除（分钟）",
           settings.autoDelete,
-          "never — keep files"
+          "从不 — 保留文件"
         )}
       </div>
       <label className="flex items-start gap-2.5">
@@ -764,11 +761,9 @@ function WorkstationCard({ data }: { data: SettingsData }) {
           className="mt-0.5"
         />
         <span className="flex flex-col gap-0.5">
-          <span className="text-[13px] font-medium">Phone take-over links</span>
+          <span className="text-[13px] font-medium">手机接管链接</span>
           <span className="text-[12px] leading-relaxed text-muted-foreground">
-            Telegram hand-offs include a link to the agent&apos;s live desktop that works
-            from your phone, through a temporary Cloudflare quick tunnel that closes after
-            30 minutes. The link carries the desktop&apos;s password.
+            Telegram 转交包含一个指向 Agent 实时桌面的链接，可通过手机访问，通过一个 30 分钟后自动关闭的临时 Cloudflare 快速隧道。链接携带桌面的密码。
           </span>
         </span>
       </label>
@@ -785,7 +780,7 @@ function WorkstationCard({ data }: { data: SettingsData }) {
                 "workstation.autoDelete": values.autoDelete.trim() || null,
                 "workstation.phoneLinks": phoneLinks ? null : "off",
               },
-              "Workstation settings saved"
+              "工作站设置已保存"
             )
           }
         >
@@ -793,7 +788,7 @@ function WorkstationCard({ data }: { data: SettingsData }) {
           Save
         </Button>
         <span className="text-[11.5px] text-faint">
-          CPU and memory apply to machines created after saving.
+          CPU 和内存对保存后新建的机器生效。
         </span>
       </div>
       <TestLine result={error ? { ok: false, error } : null} />
@@ -818,7 +813,7 @@ function ModelSection({ data }: { data: SettingsData }) {
       <div className="grid gap-4 sm:grid-cols-[1fr_160px]">
         <label className="flex flex-col gap-1.5">
           <span className="flex items-center justify-between">
-            <span className="label-mono">Default model</span>
+            <span className="label-mono">默认模型</span>
             <SourceBadge setting={data.defaultModel} unset="auto" />
           </span>
           <ModelPicker
@@ -833,14 +828,14 @@ function ModelSection({ data }: { data: SettingsData }) {
             }
           />
           <span className="text-[11.5px] text-muted-foreground">
-            Used by every agent that doesn&apos;t pick its own.
+            用于所有没有单独配置的 Agent。
             {data.defaultModel.source === "env" &&
-              " Currently set by XIRYN_DEFAULT_MODEL in .env."}
+              " 当前由 .env 中的 XIRYN_DEFAULT_MODEL 设定。"}
           </span>
         </label>
         <label className="flex flex-col gap-1.5">
           <span className="flex items-center justify-between">
-            <span className="label-mono">Max steps</span>
+            <span className="label-mono">最大步数</span>
             <SourceBadge setting={data.maxSteps} />
           </span>
           <TextInput
@@ -849,7 +844,7 @@ function ModelSection({ data }: { data: SettingsData }) {
             placeholder={data.maxSteps.value ?? "40"}
           />
           <span className="text-[11.5px] text-muted-foreground">
-            Per turn, before it stops.
+            每次会话，在停止之前。
           </span>
         </label>
       </div>
@@ -881,17 +876,15 @@ function UpdateCheck({ enabled }: { enabled: boolean }) {
         onCheckedChange={(checked) =>
           save(
             { "updates.check": checked ? null : "off" },
-            checked ? "Update check on" : "Update check off"
+            checked ? "已开启更新检查" : "已关闭更新检查"
           )
         }
         className="mt-0.5"
       />
       <span className="flex flex-col gap-0.5">
-        <span className="text-[13px] font-medium">Check GitHub for updates</span>
+        <span className="text-[13px] font-medium">检查 GitHub 上的更新</span>
         <span className="text-[12px] leading-relaxed text-muted-foreground">
-          When you open it, Xiryn asks GitHub&apos;s public API whether a newer version is
-          out and how many stars the project has, to show an Update button. It&apos;s the
-          only request Xiryn makes on its own, and it sends nothing about you.
+          打开时，Chuck Bot 会查询 GitHub 公开 API 是否有新版本以及项目的 star 数，用于显示更新按钮。这是 Chuck Bot 唯一主动发起的请求，且不会发送任何与你相关的信息。
         </span>
       </span>
     </label>
@@ -908,19 +901,15 @@ function DesktopNotify({ enabled }: { enabled: boolean }) {
         onCheckedChange={(checked) =>
           save(
             { "notify.desktop": checked ? null : "off" },
-            checked ? "Desktop notifications on" : "Desktop notifications off"
+            checked ? "已开启桌面通知" : "已关闭桌面通知"
           )
         }
         className="mt-0.5"
       />
       <span className="flex flex-col gap-0.5">
-        <span className="text-[13px] font-medium">
-          Desktop notifications in the background
-        </span>
+        <span className="text-[13px] font-medium">后台桌面通知</span>
         <span className="text-[12px] leading-relaxed text-muted-foreground">
-          When no Xiryn tab is open — a routine finishing overnight, an agent that needs
-          you while Xiryn runs in the background — your computer shows the notification
-          itself.
+          当没有 Chuck Bot 标签页打开时——例行任务在夜间完成、Agent 在后台运行时需要你——你的电脑会自行显示通知。
         </span>
       </span>
     </label>
@@ -964,12 +953,11 @@ export function SettingsForm({
 
       <div className="flex min-w-0 flex-col gap-12">
         <header className="flex flex-col gap-2">
-          <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">设置</h1>
           <p className="max-w-2xl text-[13.5px] leading-relaxed text-muted-foreground">
-            Keys can live in{" "}
+            密钥可以放在{" "}
             <code className="rounded-sm bg-muted px-1 font-mono text-[12px]">.env</code>{" "}
-            or be saved here. Values saved here take precedence and are stored only in
-            your local database — the browser only ever sees masked versions.
+            里，也可以保存在这里。保存在这里的值优先级更高，且只存于本地数据库——浏览器永远只看到脱敏后的版本。
           </p>
         </header>
 
@@ -1015,7 +1003,7 @@ export function SettingsForm({
             name="Firecrawl"
             kind="firecrawl"
             href="https://www.firecrawl.dev/app/api-keys"
-            description="Web search and clean page extraction for every agent."
+            description="为每个 Agent 提供网页搜索和干净页面提取。"
             fields={[
               {
                 key: "firecrawl.apiKey",
@@ -1058,13 +1046,13 @@ export function SettingsForm({
         >
           <div className="divide-y rounded-xl border bg-surface/50 font-mono text-[12px]">
             {[
-              ["database", data.dbPath],
-              ["agents", data.counts.agents],
-              ["squads", data.counts.squads],
-              ["threads", data.counts.threads],
-              ["messages", data.counts.messages],
-              ["memories", data.counts.memories],
-              ["allowed hosts", data.allowedHosts ?? "localhost only"],
+              ["数据库", data.dbPath],
+              ["Agents", data.counts.agents],
+              ["Squads", data.counts.squads],
+              ["会话", data.counts.threads],
+              ["消息", data.counts.messages],
+              ["记忆", data.counts.memories],
+              ["允许的主机", data.allowedHosts ?? "仅 localhost"],
             ].map(([label, value]) => (
               <div
                 key={String(label)}

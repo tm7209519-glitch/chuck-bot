@@ -92,7 +92,7 @@ export function TelegramPanelView({ initial }: { initial: TelegramPanel }) {
       const next = await getTelegramPanel()
       setPanel(next)
       if (next.owner) {
-        toast.add({ type: "success", title: `Paired with ${next.owner.name}` })
+        toast.add({ type: "success", title: `已与 ${next.owner.name} 配对` })
         router.refresh()
       }
     }, 3000)
@@ -108,10 +108,10 @@ export function TelegramPanelView({ initial }: { initial: TelegramPanel }) {
       if (value) {
         toast.add(
           next.bot
-            ? { type: "success", title: `Connected as @${next.bot.username}` }
+            ? { type: "success", title: `已连接为 @${next.bot.username}` }
             : {
                 type: "error",
-                title: "Saved, but Telegram didn't answer yet",
+                title: "已保存，但 Telegram 尚未响应",
                 description: next.error ?? undefined,
               }
         )
@@ -119,7 +119,7 @@ export function TelegramPanelView({ initial }: { initial: TelegramPanel }) {
     } catch (error) {
       toast.add({
         type: "error",
-        title: "Couldn't save the token",
+        title: "无法保存令牌",
         description: error instanceof Error ? error.message : String(error),
       })
     } finally {
@@ -132,13 +132,13 @@ export function TelegramPanelView({ initial }: { initial: TelegramPanel }) {
       <ol className="flex flex-col">
         <Step
           n={1}
-          title="Create a bot with @BotFather"
+          title="用 @BotFather 创建机器人"
           done={panel.configured}
           active={!panel.configured}
         >
           <div className="flex flex-col gap-1.5 text-[13px] leading-relaxed text-muted-foreground">
             <p>
-              In Telegram, open{" "}
+              在 Telegram 中打开{" "}
               <a
                 href="https://t.me/BotFather"
                 target="_blank"
@@ -147,18 +147,16 @@ export function TelegramPanelView({ initial }: { initial: TelegramPanel }) {
               >
                 @BotFather
               </a>{" "}
-              (the official one has a blue check) and tap{" "}
-              <b className="text-foreground">Start</b>.
+              （官方账号有蓝色勾选），点击 <b className="text-foreground">开始</b>。
             </p>
             <p>
-              Send <Code>/newbot</Code>. Give it a display name (e.g.{" "}
-              <Code>My Chuck Bot</Code>
-              ), then a username that ends in <Code>bot</Code> (e.g.{" "}
-              <Code>my_chuck_bot</Code>).
+              发送 <Code>/newbot</Code>。给它一个显示名称（例如{" "}
+              <Code>我的 Chuck Bot</Code>
+              ），再给一个以 <Code>bot</Code> 结尾的用户名（例如{" "}
+              <Code>my_chuck_bot</Code>）。
             </p>
             <p>
-              BotFather replies with a token like <Code>123456789:AAH…</Code>. That&apos;s
-              the only thing Xiryn needs. Treat it like a password.
+              BotFather 会回复一个形如 <Code>123456789:AAH…</Code> 的令牌。这就是 Chuck Bot 唯一需要的东西。请像对待密码一样保管它。
             </p>
           </div>
           <a
@@ -167,11 +165,11 @@ export function TelegramPanelView({ initial }: { initial: TelegramPanel }) {
             rel="noreferrer"
             className="inline-flex w-fit items-center gap-1.5 font-mono text-[11.5px] text-muted-foreground hover:text-foreground"
           >
-            open @BotFather <ExternalLinkIcon className="size-3" />
+            打开 @BotFather <ExternalLinkIcon className="size-3" />
           </a>
         </Step>
 
-        <Step n={2} title="Paste the token" done={connected} active={!connected}>
+        <Step n={2} title="粘贴令牌" done={connected} active={!connected}>
           <form
             onSubmit={(event) => {
               event.preventDefault()
@@ -189,7 +187,7 @@ export function TelegramPanelView({ initial }: { initial: TelegramPanel }) {
                 spellCheck={false}
                 placeholder={
                   panel.configured
-                    ? "Token saved — paste a new one to replace it"
+                    ? "令牌已保存——粘贴新令牌以替换"
                     : "123456789:AAH…"
                 }
                 className="h-8 w-full rounded-lg border border-input bg-transparent pr-2.5 pl-8 font-mono text-[12px] outline-none placeholder:text-faint focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/40 dark:bg-input/30"
@@ -197,23 +195,23 @@ export function TelegramPanelView({ initial }: { initial: TelegramPanel }) {
             </div>
             <Button type="submit" size="sm" disabled={saving || !token.trim()}>
               {saving && <Spinner data-icon="inline-start" />}
-              Connect
+              连接
             </Button>
           </form>
           <div className="flex flex-wrap items-center gap-3 font-mono text-[11.5px]">
             {connected ? (
               <span className="flex items-center gap-1.5 text-ok">
                 <span className="size-1.5 rounded-full bg-ok" />
-                polling as @{panel.bot!.username}
+                正在轮询 @{panel.bot!.username}
               </span>
             ) : panel.configured ? (
               <span className="flex items-center gap-1.5 text-betelgeuse">
                 <span className="size-1.5 rounded-full bg-betelgeuse" />
-                {panel.error ?? "connecting…"}
+                {panel.error ?? "连接中…"}
               </span>
             ) : (
               <span className="text-faint">
-                or set TELEGRAM_BOT_TOKEN in .env and restart
+                或在 .env 中设置 TELEGRAM_BOT_TOKEN 并重启
               </span>
             )}
             {panel.configured && (
@@ -223,12 +221,12 @@ export function TelegramPanelView({ initial }: { initial: TelegramPanel }) {
                     type="button"
                     className="text-muted-foreground hover:text-destructive"
                   >
-                    disconnect
+                    断开连接
                   </button>
                 }
-                title="Disconnect Telegram?"
-                description="The bot token is removed from Xiryn and the paired account is forgotten. The bot itself keeps existing in Telegram."
-                action="Disconnect"
+                title="断开 Telegram？"
+                description="机器人令牌将从 Chuck Bot 中移除，配对账号也会被遗忘。机器人本身仍保留在 Telegram 中。"
+                action="断开"
                 onConfirm={() => save(null)}
               />
             )}
@@ -240,35 +238,35 @@ export function TelegramPanelView({ initial }: { initial: TelegramPanel }) {
 
         <Step
           n={3}
-          title="Pair your Telegram account"
+          title="配对你的 Telegram 账号"
           done={paired}
           active={connected && !paired}
         >
           {paired ? (
             <div className="flex flex-wrap items-center gap-3 text-[13px]">
               <span className="text-muted-foreground">
-                Paired with <b className="text-foreground">{panel.owner!.name}</b>. Only
-                this account can use the bot.
+                已与 <b className="text-foreground">{panel.owner!.name}</b>{" "}
+                配对。只有这个账号可以使用该机器人。
               </span>
               <Confirm
                 trigger={
                   <Button size="xs" variant="ghost" className="text-muted-foreground">
                     <UnlinkIcon data-icon="inline-start" />
-                    Unpair
+                    取消配对
                   </Button>
                 }
-                title="Unpair this Telegram account?"
-                description="The bot stops answering it. You can pair again (or pair another account) with a new code."
-                action="Unpair"
+                title="取消配对这个 Telegram 账号？"
+                description="机器人将停止响应它。你可以用新码再次配对（或配对另一个账号）。"
+                action="取消配对"
                 onConfirm={async () => setPanel(await unpair())}
               />
             </div>
           ) : (
             <div className="flex flex-col gap-2 text-[13px] leading-relaxed text-muted-foreground">
               <p>
-                Scan the code with your phone, or open the link — Telegram opens your bot;
-                tap <b className="text-foreground">Start</b>. Prefer typing? Send{" "}
-                <Code>/pair {panel.pairCode ?? "…"}</Code> to the bot.
+                用手机扫描二维码，或打开链接——Telegram 会打开你的机器人；点击{" "}
+                <b className="text-foreground">开始</b>。更想打字？向机器人发送{" "}
+                <Code>/pair {panel.pairCode ?? "…"}</Code>。
               </p>
               {panel.link && (
                 <div className="flex flex-wrap items-center gap-2">
@@ -279,7 +277,7 @@ export function TelegramPanelView({ initial }: { initial: TelegramPanel }) {
                     render={<a href={panel.link} target="_blank" rel="noreferrer" />}
                   >
                     <SendIcon data-icon="inline-start" />
-                    Open in Telegram
+                    在 Telegram 中打开
                   </Button>
                   <Button
                     size="sm"
@@ -295,7 +293,7 @@ export function TelegramPanelView({ initial }: { initial: TelegramPanel }) {
                     ) : (
                       <CopyIcon data-icon="inline-start" />
                     )}
-                    Copy link
+                    复制链接
                   </Button>
                   <Button
                     size="sm"
@@ -303,7 +301,7 @@ export function TelegramPanelView({ initial }: { initial: TelegramPanel }) {
                     onClick={async () => setPanel(await newPairingCode())}
                   >
                     <RefreshCwIcon data-icon="inline-start" />
-                    New code
+                    新码
                   </Button>
                 </div>
               )}
@@ -311,12 +309,11 @@ export function TelegramPanelView({ initial }: { initial: TelegramPanel }) {
           )}
         </Step>
 
-        <Step n={4} title="Talk from anywhere" done={paired} active={paired}>
+        <Step n={4} title="随时随地对讲" done={paired} active={paired}>
           <p className="text-[13px] leading-relaxed text-muted-foreground">
-            Message the bot like you would message the agent here. <Code>/agents</Code>{" "}
-            switches agent or squad, <Code>/new</Code> starts a fresh thread,{" "}
-            <Code>/stop</Code> interrupts. Threads started from Telegram show up in this
-            app too. Xiryn has to be running on this computer for the bot to answer.
+            像在这里和 Agent 聊天一样给机器人发消息。<Code>/agents</Code>{" "}
+            切换 Agent 或 Squad，<Code>/new</Code> 开启新会话，<Code>/stop</Code>{" "}
+            中断。从 Telegram 发起的会话也会出现在这个应用里。机器人要能回复，Chuck Bot 必须在这台电脑上运行。
           </p>
         </Step>
       </ol>
@@ -330,7 +327,7 @@ export function TelegramPanelView({ initial }: { initial: TelegramPanel }) {
               dangerouslySetInnerHTML={{ __html: panel.qr }}
             />
             <span className="font-mono text-[11px] text-muted-foreground">
-              code <span className="text-foreground">{panel.pairCode}</span>
+              验证码 <span className="text-foreground">{panel.pairCode}</span>
             </span>
           </>
         ) : (
@@ -339,12 +336,12 @@ export function TelegramPanelView({ initial }: { initial: TelegramPanel }) {
               {paired ? (
                 <>
                   <CheckIcon className="size-5 text-ok" />
-                  remote access on
+                  远程访问已开启
                 </>
               ) : (
                 <>
                   <LinkIcon className="size-5" />
-                  pairing code appears once the bot is connected
+                  机器人连接后会出现配对验证码
                 </>
               )}
             </span>

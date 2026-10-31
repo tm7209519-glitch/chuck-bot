@@ -37,22 +37,22 @@ const ICONS: Record<VaultKind, React.ComponentType<{ className?: string }>> = {
 }
 
 const KEY_SOURCE: Record<KeySource, string> = {
-  keychain: "key in the macOS Keychain",
-  dpapi: "key protected by Windows (DPAPI)",
-  "secret-service": "key in the system keyring",
-  file: "key in a private file outside the data folder",
-  env: "key from XIRYN_VAULT_KEY",
+  keychain: "密钥存于 macOS 钥匙串",
+  dpapi: "密钥受 Windows (DPAPI) 保护",
+  "secret-service": "密钥存于系统 keyring",
+  file: "密钥在数据目录外的私有文件里",
+  env: "密钥来自 XIRYN_VAULT_KEY",
 }
 
 const ADDABLE: VaultKind[] = ["card", "upi", "login", "identity"]
 
 function ago(date: Date | string | null) {
-  if (!date) return "never used"
+  if (!date) return "从未使用"
   const minutes = Math.round((Date.now() - new Date(date).getTime()) / 60_000)
-  if (minutes < 60) return `used ${Math.max(1, minutes)}m ago`
+  if (minutes < 60) return `${Math.max(1, minutes)} 分钟前使用`
   const hours = Math.round(minutes / 60)
-  if (hours < 48) return `used ${hours}h ago`
-  return `used ${Math.round(hours / 24)}d ago`
+  if (hours < 48) return `${hours} 小时前使用`
+  return `${Math.round(hours / 24)} 天前使用`
 }
 
 export function VaultPanel() {
@@ -72,12 +72,9 @@ export function VaultPanel() {
       <div className="flex items-start gap-3">
         <LockIcon className="mt-0.5 size-4 shrink-0 text-rigel" />
         <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-          <span className="text-[14px] font-semibold">Vault</span>
+          <span className="text-[14px] font-semibold">保险库</span>
           <p className="text-[12.5px] leading-relaxed text-muted-foreground">
-            Logins, cards, UPI IDs and personal details, encrypted on this computer.
-            Agents see only a masked hint like “Visa ···· 4242”; Xiryn types the values
-            into the page itself. Logins fill only on their own site, and nothing is paid
-            without your approval each time.
+            登录信息、卡片、UPI ID 和个人资料，在这台电脑上加密。Agent 只会看到一个脱敏提示，如「Visa ···· 4242」；Chuck Bot 会把真实内容直接填入页面。登录信息只在其所属网站上填写，且每次支付都需要你批准。
           </p>
         </div>
       </div>
@@ -111,8 +108,7 @@ export function VaultPanel() {
         <Spinner className="size-4" />
       ) : items.length === 0 ? (
         <p className="rounded-lg border border-dashed px-3 py-4 text-center text-[12.5px] text-muted-foreground">
-          Nothing saved yet. Add a card to let agents pay after you approve, or a login to
-          sign in without asking you each time.
+          还没有保存任何内容。添加一张卡片，让 Agent 在你批准后付款；或添加登录信息，登录时无需每次都询问你。
         </p>
       ) : (
         <ul className="divide-y overflow-hidden rounded-lg border">
@@ -135,18 +131,18 @@ export function VaultPanel() {
                     <Button
                       size="icon-xs"
                       variant="ghost"
-                      aria-label={`Delete ${item.label}`}
+                      aria-label={`删除 ${item.label}`}
                     >
                       <Trash2Icon />
                     </Button>
                   }
-                  title={`Delete “${item.label}”?`}
-                  description="It's removed from the vault. Agents won't be able to use it again."
-                  action="Delete"
+                  title={`删除「${item.label}」？`}
+                  description="它将从保险库移除，Agent 无法再使用。"
+                  action="删除"
                   onConfirm={async () => {
                     await removeFromVault(item.id)
                     await refresh()
-                    toast.add({ type: "success", title: "Removed from the vault" })
+                    toast.add({ type: "success", title: "已从保险库移除" })
                   }}
                 />
               </li>
@@ -160,10 +156,9 @@ export function VaultPanel() {
           {adding && (
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-1">
-                <DialogTitle>Add {VAULT_FORMS[adding].title.toLowerCase()}</DialogTitle>
+                <DialogTitle>添加{VAULT_FORMS[adding].title}</DialogTitle>
                 <DialogDescription>
-                  Encrypted on this computer the moment you save it. It&apos;s never shown
-                  again, here or to any agent.
+                  保存的瞬间就在这台电脑上加密。之后永远不会再显示，无论是这里还是任何 Agent。
                 </DialogDescription>
               </div>
               <VaultForm
@@ -174,7 +169,7 @@ export function VaultPanel() {
                   if (!result.ok) return result.error
                   setAdding(null)
                   await refresh()
-                  toast.add({ type: "success", title: `Saved · ${result.item.hint}` })
+                  toast.add({ type: "success", title: `已保存 · ${result.item.hint}` })
                   return null
                 }}
               />

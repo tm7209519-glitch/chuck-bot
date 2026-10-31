@@ -79,7 +79,7 @@ export function LocalModelsCard() {
     } catch (error) {
       toast.add({
         type: "error",
-        title: "Couldn't reach Ollama",
+        title: "无法连接 Ollama",
         description: reason(error),
       })
     }
@@ -114,7 +114,7 @@ export function LocalModelsCard() {
     } catch (error) {
       toast.add({
         type: "error",
-        title: "Something went wrong",
+        title: "出错了",
         description: reason(error),
       })
     } finally {
@@ -139,7 +139,7 @@ export function LocalModelsCard() {
     } catch (error) {
       toast.add({
         type: "error",
-        title: "Couldn't download it",
+        title: "无法下载",
         description: reason(error),
       })
       await refresh()
@@ -167,11 +167,9 @@ export function LocalModelsCard() {
           )}
         />
         <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-          <span className="text-[14px] font-semibold">Local models</span>
+          <span className="text-[14px] font-semibold">本地模型</span>
           <p className="text-[12.5px] leading-relaxed text-muted-foreground">
-            Free models that run on this computer with Ollama. Nothing you say leaves it,
-            and nothing is billed. Smaller models are quicker but less capable than hosted
-            ones.
+            通过 Ollama 在这台电脑上运行的免费模型。你说的一切都不会离开本机，也无需付费。小模型更快，但能力不如托管模型。
           </p>
         </div>
         <a
@@ -189,12 +187,12 @@ export function LocalModelsCard() {
           <CpuIcon className="size-3.5 text-muted-foreground" />
           <span className="font-mono text-[12px]">
             {!panel
-              ? "checking ollama…"
+              ? "检查 Ollama…"
               : panel.running
-                ? `ollama ${panel.version ?? ""} · ${installed.length} model${installed.length === 1 ? "" : "s"} · ${panel.memoryGb} GB memory`
+                ? `ollama ${panel.version ?? ""} · ${installed.length} 个模型 · ${panel.memoryGb} GB 内存`
                 : panel.installed
-                  ? "ollama isn't running"
-                  : "ollama isn't installed"}
+                  ? "Ollama 未运行"
+                  : "未安装 Ollama"}
           </span>
           {panel?.running && !panel.connected && (
             <Button
@@ -202,18 +200,18 @@ export function LocalModelsCard() {
               variant="secondary"
               className="ml-auto"
               disabled={!!busy}
-              onClick={() => act("connect", connectLocalModels, "Ollama connected")}
+              onClick={() => act("connect", connectLocalModels, "Ollama 已连接")}
             >
               {busy === "connect" ? (
                 <Spinner data-icon="inline-start" />
               ) : (
                 <PlugIcon data-icon="inline-start" />
               )}
-              Use in Xiryn
+              在 Chuck Bot 中使用
             </Button>
           )}
           {panel?.running && panel.connected && (
-            <span className="ml-auto font-mono text-[10.5px] text-ok">connected</span>
+            <span className="ml-auto font-mono text-[10.5px] text-ok">已连接</span>
           )}
           {panel && !panel.running && panel.installed && (
             <Button
@@ -233,7 +231,7 @@ export function LocalModelsCard() {
               ) : (
                 <PlayIcon data-icon="inline-start" />
               )}
-              Start Ollama
+              启动 Ollama
             </Button>
           )}
         </div>
@@ -241,14 +239,13 @@ export function LocalModelsCard() {
         {panel && !panel.installed && (
           <div className="flex flex-col gap-2 px-3 py-3 text-[12.5px] leading-relaxed text-muted-foreground">
             <p>
-              One command installs Ollama, downloads a model that fits this computer and
-              makes it the default. In a terminal in the Xiryn folder:
+              一条命令即可安装 Ollama、下载适合这台电脑的模型并设为默认。在 Chuck Bot 所在目录的终端里：
             </p>
             <code className="rounded-md border bg-background/60 px-2.5 py-1.5 font-mono text-[11.5px] text-foreground">
               npm run setup:local
             </code>
             <p>
-              Or install it from{" "}
+              或者从{" "}
               <a
                 href="https://ollama.com/download"
                 target="_blank"
@@ -257,7 +254,7 @@ export function LocalModelsCard() {
               >
                 ollama.com
               </a>{" "}
-              and come back here.
+              安装后回到这里。
             </p>
           </div>
         )}
@@ -286,12 +283,12 @@ export function LocalModelsCard() {
                   act(
                     `use:${model.name}`,
                     () => chooseLocalModel(model.name),
-                    `${model.name} is now the default`
+                    `${model.name} 现为默认`
                   )
                 }
               >
                 {busy === `use:${model.name}` && <Spinner data-icon="inline-start" />}
-                Use as default
+                设为默认
               </Button>
             )}
           </div>
@@ -300,7 +297,7 @@ export function LocalModelsCard() {
 
       {panel?.running && (
         <div className="flex flex-col gap-2">
-          <span className="label-mono">Download</span>
+          <span className="label-mono">下载</span>
           <div className="flex flex-col divide-y rounded-lg border">
             {panel.recommended.map((model) => {
               const pull = pullFor(model.model)
@@ -313,19 +310,19 @@ export function LocalModelsCard() {
                       {model.size}
                     </span>
                     {model.model === panel.best && (
-                      <span className="rounded-sm border border-ok/30 px-1.5 py-px font-mono text-[10px] text-ok">
-                        best for this computer
-                      </span>
+              <span className="rounded-sm border border-ok/30 px-1.5 py-px font-mono text-[10px] text-ok">
+                默认
+              </span>
                     )}
                     {!fits && (
                       <span className="font-mono text-[10px] text-warn">
-                        needs {model.minMemory} GB+
+                        需要 {model.minMemory} GB+
                       </span>
                     )}
                     <span className="ml-auto">
                       {has(model.model) ? (
                         <span className="font-mono text-[10.5px] text-muted-foreground">
-                          downloaded
+                          已下载
                         </span>
                       ) : pull?.state === "pulling" ? (
                         <Spinner className="size-3.5" />
@@ -337,7 +334,7 @@ export function LocalModelsCard() {
                           onClick={() => download(model.model)}
                         >
                           <DownloadIcon data-icon="inline-start" />
-                          {pull?.state === "failed" ? "Try again" : "Download"}
+                          {pull?.state === "failed" ? "重试" : "下载"}
                         </Button>
                       )}
                     </span>
@@ -361,7 +358,7 @@ export function LocalModelsCard() {
             <input
               value={custom}
               onChange={(event) => setCustom(event.target.value)}
-              placeholder="any model from ollama.com/library, e.g. gemma4:12b"
+              placeholder="ollama.com/library 上的任意模型，例如 gemma4:12b"
               spellCheck={false}
               className="h-8 min-w-0 flex-1 rounded-lg border border-input bg-transparent px-2.5 font-mono text-[12px] outline-none placeholder:text-faint focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/40 dark:bg-input/30"
             />
@@ -372,7 +369,7 @@ export function LocalModelsCard() {
               disabled={!custom.trim() || !!busy}
             >
               <DownloadIcon data-icon="inline-start" />
-              Download
+              下载
             </Button>
           </form>
           {panel.pulls
@@ -385,10 +382,8 @@ export function LocalModelsCard() {
               </div>
             ))}
           <p className="text-[11.5px] text-faint">
-            Agents need a model that can call tools. These can, and they can see
-            screenshots of their desktop too. Xiryn asks Ollama for a{" "}
-            {Math.round(panel.context / 1024)}K context with every request, so an
-            agent&apos;s instructions always fit.
+            Agent 需要能调用工具的模型。这些可以，而且还能看到它们桌面的截图。Chuck Bot 每次请求都向 Ollama 请求{" "}
+            {Math.round(panel.context / 1024)}K 的上下文，因此 Agent 的指令总能完整容纳。
           </p>
         </div>
       )}
