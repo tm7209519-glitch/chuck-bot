@@ -100,4 +100,19 @@ function registerUpdaterIpc() {
   ipcMain.handle("update:downloaded-version", () => downloadedVersion)
 }
 
-module.exports = { registerUpdaterIpc }
+// Trigger a check from the main process (e.g. the tray menu) and push the
+// result to any open window via the usual events. Returns the version if a
+// newer one is found, or null.
+async function checkForUpdatesFromMain() {
+  const autoUpdater = getAutoUpdater()
+  if (!autoUpdater) return null
+  try {
+    const result = await autoUpdater.checkForUpdates()
+    return result?.updateInfo?.version ?? null
+  } catch (error) {
+    send("update:error", { message: error?.message ?? String(error) })
+    return null
+  }
+}
+
+module.exports = { registerUpdaterIpc, checkForUpdatesFromMain }

@@ -17,7 +17,7 @@ const path = require("node:path")
 const fs = require("node:fs")
 const http = require("node:http")
 const { registerIpc } = require("./ipc")
-const { registerUpdaterIpc } = require("./updater")
+const { registerUpdaterIpc, checkForUpdatesFromMain } = require("./updater")
 
 const APP_URL = process.env.CHUCK_BOT_URL || "http://127.0.0.1:6796"
 const PORT = Number(process.env.CHUCK_BOT_PORT || 6796)
@@ -219,6 +219,24 @@ function createTray() {
   tray.setToolTip("Chuck Bot")
   const menu = Menu.buildFromTemplate([
     { label: "打开 Chuck Bot", click: () => showWindow() },
+    {
+      label: "检查更新",
+      click: () => {
+        // Runs in the background; the window (if open) shows the result via
+        // the updater's events. If there is no window, just show one.
+        showWindow()
+        checkForUpdatesFromMain()
+      },
+    },
+    { type: "separator" },
+    {
+      label: "开机自启",
+      type: "checkbox",
+      checked: app.getLoginItemSettings().openAtLogin,
+      click: (item) => {
+        app.setLoginItemSettings({ openAtLogin: item.checked })
+      },
+    },
     { type: "separator" },
     {
       label: "退出",

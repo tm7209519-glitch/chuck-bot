@@ -528,6 +528,44 @@ function elapsed(since: number) {
   return seconds < 60 ? `${seconds}s` : `${Math.floor(seconds / 60)}m ${seconds % 60}s`
 }
 
+// BuildKit step strings look like "3/9 · RUN apt-get update …". Pull the
+// current/total so we can draw a progress bar while the image builds.
+function buildProgress(step: string | null | undefined) {
+  if (!step) return null
+  const match = step.match(/^(\d+)\/(\d+)/)
+  if (!match) return null
+  const current = Number(match[1])
+  const total = Number(match[2])
+  if (total <= 0) return null
+  return { current, total, percent: Math.min(100, Math.round((current / total) * 100)) }
+}
+
+function BuildProgress({ step, startedAt }: { step: string | null; startedAt: number }) {
+  const progress = buildProgress(step)
+  return (
+    <div className="flex flex-col gap-1.5">
+      {progress ? (
+        <>
+          <div className="flex items-baseline justify-between font-mono text-[11px] text-rigel">
+            <span className="truncate">{step}</span>
+            <span className="shrink-0 tabular-nums">{progress.percent}%</span>
+          </div>
+          <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+            <div
+              className="h-full rounded-full bg-rigel transition-[width] duration-500"
+              style={{ width: `${progress.percent}%` }}
+            />
+          </div>
+        </>
+      ) : (
+        <p className="truncate font-mono text-[11px] text-rigel">
+          {step ? `步骤 ${step}` : `正在构建 · ${elapsed(startedAt)}`}
+        </p>
+      )}
+    </div>
+  )
+}
+
 function WorkstationCard({ data }: { data: SettingsData }) {
   const router = useRouter()
   const { save, pending } = useSave()
@@ -724,10 +762,8 @@ function WorkstationCard({ data }: { data: SettingsData }) {
                 在这台电脑上构建一次（需要几分钟），或在 Agent 首次需要它的机器时自动构建。
               </p>
             )}
-            {image.state === "building" && image.step && (
-              <p className="truncate font-mono text-[11px] text-rigel">
-                步骤 {image.step}
-              </p>
+            {image.state === "building" && (
+              <BuildProgress step={image.step} startedAt={image.startedAt} />
             )}
             {image.state === "failed" && (
               <p className="font-mono text-[11px] break-all text-destructive">

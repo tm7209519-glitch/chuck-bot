@@ -28,6 +28,7 @@ import { useFeedbackContext } from "@/components/feedback/feedback-prompt"
 import { Glyph, SquadGlyph } from "@/components/glyph"
 import { useWorkspace } from "@/components/workspace/context"
 import { DesktopUpdater } from "@/components/workspace/desktop-updater"
+import { LocaleToggle } from "@/components/workspace/locale-toggle"
 import { Kbd } from "@/components/ui/kbd"
 import { toast } from "@/components/ui/toast"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
@@ -433,6 +434,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
             </TooltipTrigger>
             <TooltipContent side="top">{t("toggleTheme")}</TooltipContent>
           </Tooltip>
+          <LocaleToggle />
         </div>
       </div>
     </aside>
