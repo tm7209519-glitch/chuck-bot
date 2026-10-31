@@ -57,6 +57,10 @@ jobs:
         shell: bash
         run: |
           NODE_VERSION=$(node --version | sed 's/^v//')
+          if [ "${GITHUB_REF_TYPE}" = "tag" ] && [ "${GITHUB_REF_NAME}" != "v$(node -p "require('./desktop/package.json').version")" ]; then
+            echo "Tag ${GITHUB_REF_NAME} does not match desktop/package.json version"
+            exit 1
+          fi
           node desktop/scripts/bundle-app.mjs --node "node-v${NODE_VERSION}-win-x64"
 
       # 4. Install desktop deps and build/publish the installer.

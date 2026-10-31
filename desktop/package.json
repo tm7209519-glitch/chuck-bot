@@ -1,6 +1,6 @@
 {
   "name": "chuck-bot-desktop",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Chuck Bot desktop shell — a thin Electron client that bundles and manages the local Xiryn (Next.js) service.",
   "main": "main/index.js",
   "private": true,
@@ -47,7 +47,8 @@
     "publish": {
       "provider": "github",
       "owner": "tm7209519-glitch",
-      "repo": "chuck-bot"
+      "repo": "chuck-bot",
+      "releaseType": "release"
     },
     "win": {
       "target": "nsis"
