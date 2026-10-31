@@ -1,8 +1,9 @@
 // Chuck Bot preload — exposes a minimal, sandbox-safe bridge to the renderer.
 const { contextBridge, ipcRenderer } = require("electron")
+const { version } = require("../package.json")
 
 contextBridge.exposeInMainWorld("chuckBot", {
-  version: process.env.npm_package_version || "0.1.0",
+  version,
   platform: process.platform,
   // Environment diagnostics for the first-run wizard.
   env: {

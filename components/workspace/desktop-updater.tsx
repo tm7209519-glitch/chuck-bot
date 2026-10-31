@@ -10,7 +10,7 @@ type UpdateStatus = "idle" | "checking" | "available" | "downloading" | "downloa
 type UpdateResult = { ok?: boolean; already?: boolean; version?: string | null; message?: string }
 declare global {
   interface Window {
-    chuckBot?: { update?: DesktopUpdateApi }
+    chuckBot?: { version?: string; update?: DesktopUpdateApi }
   }
 }
 
@@ -50,6 +50,7 @@ export function DesktopUpdater({ version }: { version: string }) {
   if (!api) {
     return <span className="rounded-sm border px-1.5 py-px font-mono text-[10px] text-muted-foreground">v{version}</span>
   }
+  const desktopVersion = window.chuckBot?.version ?? version
 
   const click = async () => {
     if (state === "idle" || state === "error") {
@@ -71,7 +72,7 @@ export function DesktopUpdater({ version }: { version: string }) {
       : state === "downloading" ? `${progress}%`
         : state === "downloaded" ? t("restartUpdate")
           : state === "error" ? t("retryUpdate")
-            : `v${version}`
+            : `v${desktopVersion}`
   return (
     <button
       type="button"
