@@ -140,7 +140,7 @@ export function ModelPicker({
           <ModelSpecLabel spec={value} className="flex-1" />
         ) : (
           <span className="flex min-w-0 flex-1 items-baseline gap-2">
-            <span className="text-[13px]">Workspace default</span>
+            <span className="text-[13px]">工作区默认</span>
             {defaultSpec && (
               <ModelSpecLabel
                 spec={defaultSpec}
@@ -224,12 +224,11 @@ export function ModelPicker({
           </CommandList>
           <div className="flex items-center gap-2 border-t px-3 py-2 text-[11.5px] text-muted-foreground">
             {configured.length === 0 ? (
-              <span>No provider has a key yet — add one in Settings.</span>
+              <span>还没有任何提供商配置了密钥——请在设置中添加。</span>
             ) : (
               <>
                 <span className="truncate">
-                  {providers.length - configured.length} more providers available in
-                  Settings
+                  还有 {providers.length - configured.length} 个提供商可在设置中配置
                 </span>
                 <button
                   type="button"

@@ -21,10 +21,10 @@ export default function WorkspaceError({
       <div className="flex max-w-md flex-col items-center gap-4 text-center">
         <TriangleAlertIcon className="size-6 text-betelgeuse" />
         <div className="flex flex-col gap-1.5">
-          <span className="label-mono">{"// runtime error"}</span>
-          <h1 className="text-lg font-semibold">Something broke on this screen.</h1>
+          <span className="label-mono">{"// 运行时错误"}</span>
+          <h1 className="text-lg font-semibold">此页面出现了问题。</h1>
           <p className="font-mono text-[12px] break-words text-muted-foreground">
-            {error.message || "Unknown error"}
+            {error.message || "未知错误"}
             {error.digest && (
               <span className="block text-faint">digest {error.digest}</span>
             )}
@@ -32,7 +32,7 @@ export default function WorkspaceError({
         </div>
         <Button size="sm" variant="outline" onClick={reset}>
           <RotateCcwIcon data-icon="inline-start" />
-          Try again
+          重试
         </Button>
       </div>
     </div>
