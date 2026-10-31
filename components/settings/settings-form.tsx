@@ -39,7 +39,7 @@ import type { SettingsData } from "@/queries/workspace"
 
 function SourceBadge({
   setting,
-  unset = "unset",
+  unset = "未设置",
 }: {
   setting: SettingView
   unset?: string
@@ -54,13 +54,13 @@ function SourceBadge({
         : "text-faint"
   const label =
     setting.source === "local"
-      ? "saved here"
+      ? "保存在本地"
       : setting.source === "env"
         ? ".env"
-        : "default"
+        : "默认"
   return (
     <span
-      title={setting.env ? `Environment variable: ${setting.env}` : undefined}
+      title={setting.env ? `环境变量：${setting.env}` : undefined}
       className={cn("rounded-sm border px-1.5 py-px font-mono text-[10px]", tone)}
     >
       {label}
@@ -255,7 +255,7 @@ function ProviderRow({ provider }: { provider: SettingsData["providers"][number]
           {showsKey && (
             <label className="flex flex-col gap-1.5">
               <span className="flex items-center justify-between">
-                <span className="label-mono">API key</span>
+                <span className="label-mono">API 密钥</span>
                 <span className="font-mono text-[10px] text-faint">
                   {provider.keyEnv}
                 </span>
@@ -407,7 +407,7 @@ function IntegrationCard({
           rel="noreferrer"
           className="inline-flex shrink-0 items-center gap-1 font-mono text-[11px] text-muted-foreground hover:text-foreground"
         >
-          get a key <ExternalLinkIcon className="size-3" />
+          获取密钥 <ExternalLinkIcon className="size-3" />
         </a>
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
@@ -1007,7 +1007,7 @@ export function SettingsForm({
             fields={[
               {
                 key: "firecrawl.apiKey",
-                label: "API key",
+                label: "API 密钥",
                 setting: data.firecrawl.apiKey,
                 secret: true,
               },
