@@ -27,6 +27,7 @@ import { Confirm } from "@/components/confirm"
 import { useFeedbackContext } from "@/components/feedback/feedback-prompt"
 import { Glyph, SquadGlyph } from "@/components/glyph"
 import { useWorkspace } from "@/components/workspace/context"
+import { DesktopUpdater } from "@/components/workspace/desktop-updater"
 import { Kbd } from "@/components/ui/kbd"
 import { toast } from "@/components/ui/toast"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
@@ -220,9 +221,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
               {t("update")}
             </a>
           ) : (
-            <span className="rounded-sm border px-1.5 py-px font-mono text-[10px] text-muted-foreground">
-              v{status.version}
-            </span>
+            <DesktopUpdater version={status.version} />
           )}
         </div>
       </div>
